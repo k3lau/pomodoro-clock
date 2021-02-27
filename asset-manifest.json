@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/podomoro-clock/static/css/main.18ae3f9b.chunk.css",
+    "main.js": "/podomoro-clock/static/js/main.916f409e.chunk.js",
+    "main.js.map": "/podomoro-clock/static/js/main.916f409e.chunk.js.map",
+    "runtime-main.js": "/podomoro-clock/static/js/runtime-main.e062aa6b.js",
+    "runtime-main.js.map": "/podomoro-clock/static/js/runtime-main.e062aa6b.js.map",
+    "static/css/2.150d169a.chunk.css": "/podomoro-clock/static/css/2.150d169a.chunk.css",
+    "static/js/2.582226f4.chunk.js": "/podomoro-clock/static/js/2.582226f4.chunk.js",
+    "static/js/2.582226f4.chunk.js.map": "/podomoro-clock/static/js/2.582226f4.chunk.js.map",
+    "static/js/3.caa64935.chunk.js": "/podomoro-clock/static/js/3.caa64935.chunk.js",
+    "static/js/3.caa64935.chunk.js.map": "/podomoro-clock/static/js/3.caa64935.chunk.js.map",
+    "index.html": "/podomoro-clock/index.html",
+    "static/css/2.150d169a.chunk.css.map": "/podomoro-clock/static/css/2.150d169a.chunk.css.map",
+    "static/css/main.18ae3f9b.chunk.css.map": "/podomoro-clock/static/css/main.18ae3f9b.chunk.css.map",
+    "static/js/2.582226f4.chunk.js.LICENSE.txt": "/podomoro-clock/static/js/2.582226f4.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e062aa6b.js",
+    "static/css/2.150d169a.chunk.css",
+    "static/js/2.582226f4.chunk.js",
+    "static/css/main.18ae3f9b.chunk.css",
+    "static/js/main.916f409e.chunk.js"
+  ]
+}
