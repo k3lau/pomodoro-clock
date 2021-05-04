@@ -13,9 +13,11 @@ export class SessionLength extends Component {
 
   decre() {
     var time = this.props.sessionLength - 1;
-    this.props.setSession(time);
-    if (this.props.timerStatus === -1) {
-      this.props.setTimeLeft(time);
+    if (time >= 1) {
+      this.props.setSession(time);
+      if (this.props.timerType == "Session") {
+        this.props.setTimeLeft(this.props.timeLeft - 60)
+      }
     }
   }
 
@@ -23,9 +25,10 @@ export class SessionLength extends Component {
     var time = this.props.sessionLength + 1;
     if (time <= 60) {
       this.props.setSession(time);
-      if (this.props.timerStatus === -1) {
-        this.props.setTimeLeft(time);
+      if (this.props.timerType == "Session") {
+        this.props.setTimeLeft(this.props.timeLeft + 60)
       }
+      
     }
   }
 

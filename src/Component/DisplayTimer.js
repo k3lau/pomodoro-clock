@@ -12,24 +12,41 @@ export class DisplayTimer extends Component {
     this.reset = this.reset.bind(this);
     this.displayTimeMMSS = this.displayTimeMMSS.bind(this);
     this.buzzer = this.buzzer.bind(this);
+    this.sleep = this.sleep.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
-    // if(prevProps.value !== this.props.timeLeft) {
-    //   this.setState({: this.props.timeLeft});
-    // }
+  clockInterval = () => {
+    let timerID = setTimeout(() => {
+      var timeLeft = this.props.timeLeft;
+      timeLeft = timeLeft - 1
+      this.props.setTimeLeft(timeLeft);
+      this.buzzer(timeLeft);
+      if (timeLeft < 0) {
+        clearTimeout(this.props.timerID)
+        if (this.props.timerType === "Session") {
+            this.props.setTimerType("Break");
+            this.props.setTimeLeft(this.props.breakLength * 60);
+          } else {
+            this.props.setTimerType("Session");
+            this.props.setTimeLeft(this.props.sessionLength * 60);
+          }
+          console.log("CHECK HERE");
+      }
+      this.props.setTimerID(this.clockInterval());
+    }, 1000)
+    return timerID;
   }
-  startStop() {
+
+  startStop(e = 0) {
     let status = this.props.timerStatus;
-    if (status !== 1) {
-      let timerID = setInterval(() => {
-        var timeLeft = (this.props.timeLeft * 60 - 1) / 60;
-        this.props.setTimeLeft(timeLeft);
-      }, 1000);
+    console.log(`Button ${status} and ${e}`)
+    if (status === 0) {
+      let timerID = this.clockInterval();
       this.props.setTimerID(timerID);
 
       this.props.setTimerStatus(1);
     } else {
+      clearTimeout(this.props.timerID);
       this.props.setTimerStatus(0);
     }
   }
@@ -37,43 +54,40 @@ export class DisplayTimer extends Component {
   reset() {
     this.props.setBreak(5);
     this.props.setSession(25);
-    this.props.setTimeLeft(this.props.sessionLength);
-    clearInterval(this.timer);
-    this.setState({
-      timerOn: -1,
-    });
-    this.audioBeep.pause();
+    this.props.setTimeLeft(1500);
+    this.props.setTimerType("Session");
+    clearTimeout(this.props.timerID);
+    //console.log(`readyState ${this.audioBeep.readyState}`);
+    //console.log(`paused ${this.audioBeep.paused}`);
+    //console.log(`ended ${this.audioBeep.ended}`);
+    //console.log(`currentTime ${this.audioBeep.currentTime}`);
+    //if (this.audioBeep.currentTime > 0 && !this.audioBeep.paused && !this.audioBeep.ended && this.audioBeep.readyState > 2) {
+    //  if (this.audioBeep.currentTime > 0 && !this.audioBeep.paused && !this.audioBeep.ended && this.audioBeep.readyState > 0) {
+      this.audioBeep.pause();
+    //}
     this.audioBeep.currentTime = 0;
+    this.props.setTimerStatus(0);
   }
 
   displayTimeMMSS() {
     let e = this.props.timeLeft;
-    const sec = (e * 60) % 60;
-    const min = Math.floor((e * 60) / 60);
-    let sMinutes = `${min}`;
+    let sec = Math.floor(e % 60);
+    let min = Math.floor(e / 60);
+    let sMinutes = `${min}`.padStart(2, "0");
     let sSeconds = `${sec % 60}`.padStart(2, "0");
     return sMinutes + ":" + sSeconds;
   }
 
-  timerLabel() {
-    if (this.props.timeLeft === 0) {
-      if (this.props.timerType === "Session") {
-        this.props.setTimerType("Break");
-        this.props.setTimeLeft(this.props.breakLength);
-      } else {
-        this.props.setTimerType("Session");
-        this.props.setTimeLeft(this.props.sessionLength);
-      }
-      console.log("CHECK HERE");
-      this.buzzer(1500);
-    }
+  sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
 
-    console.log(`What ${this.props.timeLeft} and ${this.props.timerStatus}`);
+  timerLabel() {
     return this.props.timerType;
   }
 
   buzzer(_timer) {
-    if (_timer !== 0) {
+    if (_timer === 0) {
       this.audioBeep.play();
     }
   }
@@ -81,9 +95,11 @@ export class DisplayTimer extends Component {
   render() {
     return (
       <Container fluid="md">
-        <Row>{this.timerLabel()}</Row>
         <Row>
-          <div id="time-left">{this.displayTimeMMSS()}</div>
+          <div id="timer-label">{this.timerLabel()}</div>
+          </Row>
+        <Row>
+          <div><p id="time-left">{this.displayTimeMMSS()}</p></div>
         </Row>
         <Row>
           <Button variant="primary" id="start_stop" onClick={this.startStop}>
@@ -99,7 +115,8 @@ export class DisplayTimer extends Component {
           ref={(audio) => {
             this.audioBeep = audio;
           }}
-          src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
+          src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav" 
+          //src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
         ></audio>
       </Container>
     );
