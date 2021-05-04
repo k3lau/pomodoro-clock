@@ -12,15 +12,23 @@ export class BreakLength extends Component {
   }
 
   decre() {
-    var time = this.props.breakLength;
-    if (time >= 0) {
-      this.props.setBreak(time - 1);
+    var time = this.props.breakLength - 1;
+    if (time >= 1) {
+      this.props.setBreak(time);
+      if (this.props.timerType == "Break") {
+        this.props.setTimeLeft(this.props.timeLeft - 60);
+      }
     }
   }
 
   incre() {
-    var time = this.props.breakLength;
-    this.props.setBreak(time + 1);
+    var time = this.props.breakLength + 1;
+    if (time <= 60) {
+      this.props.setBreak(time);
+      if (this.props.timerType == "Break") {
+        this.props.setTimeLeft(this.props.timeLeft + 60);
+      }
+    }
   }
 
   render() {

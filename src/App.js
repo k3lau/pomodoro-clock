@@ -19,10 +19,10 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      timeLeft: 0.05,
-      breakLength: 0.1,
-      sessionLength: 0.05,
-      timerStatus: -1,
+      timeLeft: 1500,
+      breakLength: 5,
+      sessionLength: 25,
+      timerStatus: 0,
       timerType: "Session",
       timerID: 0,
     };
@@ -48,21 +48,12 @@ export default class App extends Component {
   }
 
   setTimeLeft(e) {
-    if (e <= 0) {
-      e = 0;
-
-      console.log("CHECK HERE 2 ");
-    }
-
     this.setState((state, props) => ({
       timeLeft: e,
     }));
   }
 
   setTimerStatus(e) {
-    if (e === 0) {
-      clearInterval(this.state.timerID);
-    }
     this.setState({
       timerStatus: e,
     });
@@ -91,6 +82,7 @@ export default class App extends Component {
           breakLength={this.state.breakLength}
           timerStatus={this.state.timerStatus}
           timeLeft={this.state.timeLeft}
+          timerType={this.state.timerType}
         ></BreakLength>
         <SessionLength
           setSession={this.setSession}
@@ -100,6 +92,7 @@ export default class App extends Component {
           sessionLength={this.state.sessionLength}
           timerStatus={this.state.timerStatus}
           timeLeft={this.state.timeLeft}
+          timerType={this.state.timerType}
         ></SessionLength>
         <DisplayTimer
           setTimeLeft={this.setTimeLeft}
