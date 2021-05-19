@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import styled from "styled-components";
+import { TimerSetting, StyledButton } from "./TimerSetting.elements";
 
 export class BreakLength extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ export class BreakLength extends Component {
     var time = this.props.breakLength - 1;
     if (time >= 1) {
       this.props.setBreak(time);
-      if (this.props.timerType == "Break") {
+      if (this.props.timerType === "Break") {
         this.props.setTimeLeft(this.props.timeLeft - 60);
       }
     }
@@ -25,7 +25,7 @@ export class BreakLength extends Component {
     var time = this.props.breakLength + 1;
     if (time <= 60) {
       this.props.setBreak(time);
-      if (this.props.timerType == "Break") {
+      if (this.props.timerType === "Break") {
         this.props.setTimeLeft(this.props.timeLeft + 60);
       }
     }
@@ -33,22 +33,27 @@ export class BreakLength extends Component {
 
   render() {
     return (
-      <Container fluid="md">
-        <Row>
-          <div id="break-label">Break Length</div>
-        </Row>
-        <Row>
-          <div id="break-length">{`${this.props.breakLength}`}</div>
-        </Row>
-        <Row>
-          <Button variant="primary" id="break-decrement" onClick={this.decre}>
-            -
-          </Button>
-          <Button variant="primary" id="break-increment" onClick={this.incre}>
-            +
-          </Button>
-        </Row>
-      </Container>
+      <TimerSetting>
+        <div id="break-label">Break</div>
+
+        <div id="break-length">{`${this.props.breakLength}`}</div>
+        <div>
+          <StyledButton
+            variant="primary"
+            id="break-decrement"
+            onClick={this.decre}
+          >
+            <i class="fas fa-angle-down"></i>
+          </StyledButton>
+          <StyledButton
+            variant="primary"
+            id="break-increment"
+            onClick={this.incre}
+          >
+            <i class="fas fa-angle-up"></i>
+          </StyledButton>
+        </div>
+      </TimerSetting>
     );
   }
 }

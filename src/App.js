@@ -1,18 +1,25 @@
 import "./App.css";
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { BreakLength } from "./Component/BreakLength";
 import { SessionLength } from "./Component/SessionLength";
 import { DisplayTimer } from "./Component/DisplayTimer";
 import "bootstrap/dist/css/bootstrap.min.css";
+import styled from "styled-components";
 
-function durationSecondToMMSS(duration) {
-  const sec = duration % 60;
-  const min = Math.floor(duration / 60);
-  let sMinutes = `${min}`;
-  let sSeconds = `${sec}`.padStart(2, "0");
-  return sMinutes + ":" + sSeconds;
-}
+const Layout = styled.div`
+  background-color: #f0f0f0;
+  min-height: 700px;
+  max-height: 1024px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 1024px;
+  margin: auto;
+  border-radius: 10px;
+  padding: 50px;
+  font-size: 1.5em;
+`;
 
 export default class App extends Component {
   constructor(props) {
@@ -73,7 +80,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <div className="app">
+      <Layout>
         <BreakLength
           setBreak={this.setBreak}
           setTimer={this.setTimeLeft}
@@ -108,7 +115,7 @@ export default class App extends Component {
           timerType={this.state.timerType}
           timerID={this.state.timerID}
         ></DisplayTimer>
-      </div>
+      </Layout>
     );
   }
 }

@@ -2,7 +2,18 @@ import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { StyledButton } from "./TimerSetting.elements";
+import styled from "styled-components";
+
+const DisplayContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: lightblue;
+  width: 100%;
+  padding: 0px;
+`;
 
 export class DisplayTimer extends Component {
   constructor(props) {
@@ -13,6 +24,7 @@ export class DisplayTimer extends Component {
     this.displayTimeMMSS = this.displayTimeMMSS.bind(this);
     this.buzzer = this.buzzer.bind(this);
     this.sleep = this.sleep.bind(this);
+    //this.clockInterval = this.clockInterval.bind(this);
   }
 
   clockInterval = () => {
@@ -94,23 +106,31 @@ export class DisplayTimer extends Component {
 
   render() {
     return (
-      <Container fluid="md">
-        <Row>
+      <DisplayContainer>
+        <div>
           <div id="timer-label">{this.timerLabel()}</div>
-        </Row>
-        <Row>
+        </div>
+        <div>
           <div>
             <p id="time-left">{this.displayTimeMMSS()}</p>
           </div>
-        </Row>
-        <Row>
-          <Button variant="primary" id="start_stop" onClick={this.startStop}>
-            Start/Stop
-          </Button>
-          <Button variant="primary" id="reset" onClick={this.reset}>
-            Reset
-          </Button>
-        </Row>
+        </div>
+        <div>
+          <StyledButton
+            variant="primary"
+            id="start_stop"
+            onClick={this.startStop}
+          >
+            {this.props.timerStatus == 1 ? (
+              <i class="fas fa-stop"></i>
+            ) : (
+              <i class="fas fa-play"></i>
+            )}
+          </StyledButton>
+          <StyledButton variant="primary" id="reset" onClick={this.reset}>
+            <i class="fas fa-undo"></i>
+          </StyledButton>
+        </div>
         <audio
           id="beep"
           preload="auto"
@@ -120,7 +140,7 @@ export class DisplayTimer extends Component {
           src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
           //src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
         ></audio>
-      </Container>
+      </DisplayContainer>
     );
   }
 }
