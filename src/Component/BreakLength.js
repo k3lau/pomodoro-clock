@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import styled from "styled-components";
-import { TimerSetting, StyledButton } from "./TimerSetting.elements";
+import { TimerSetting, StyledButton } from "./TimerSetting.elements.js";
 
 export class BreakLength extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ export class BreakLength extends Component {
 
   render() {
     return (
-      <TimerSetting>
+      <React.Fragment>
         <div id="break-label">Break</div>
 
         <div id="break-length">{`${this.props.breakLength}`}</div>
@@ -53,7 +53,7 @@ export class BreakLength extends Component {
             <i class="fas fa-angle-up"></i>
           </StyledButton>
         </div>
-      </TimerSetting>
+      </React.Fragment>
     );
   }
 }

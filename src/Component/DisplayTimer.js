@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import { StyledButton } from "./TimerSetting.elements";
+import { StyledButton } from "./TimerSetting.elements.js";
 import styled from "styled-components";
 
 const DisplayContainer = styled.div`
@@ -105,32 +105,53 @@ export class DisplayTimer extends Component {
   }
 
   render() {
+    const size = 300;
+    const wrapperStyle = {
+      position: 'relative',
+      width: size,
+      height: size
+    }
+    const timeStyle = {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      width: '100%',
+      height: '100%',
+    }
     return (
       <DisplayContainer>
-        <div>
-          <div id="timer-label">{this.timerLabel()}</div>
-        </div>
-        <div>
-          <div>
-            <p id="time-left">{this.displayTimeMMSS()}</p>
+        <div style={wrapperStyle}>
+          <svg width={size} height={size} xmlns="https://www.w3.org/2000/svg">
+            
+            <circle stroke="red" stroke-linecap="round" cx={size/2} cy={size/2} r={size/2-4} fill="none" strokeWidth="4"/>
+
+          </svg>
+
+          <div style={timeStyle}>
+            <div id="timer-label">{this.timerLabel()}</div>
+              <p id="time-left">{this.displayTimeMMSS()}</p>
+              <div>
+            <StyledButton
+              variant="primary"
+              id="start_stop"
+              onClick={this.startStop}
+            >
+              {this.props.timerStatus == 1 ? (
+                <i class="fas fa-stop"></i>
+              ) : (
+                <i class="fas fa-play"></i>
+              )}
+            </StyledButton>
+            <StyledButton variant="primary" id="reset" onClick={this.reset}>
+              <i class="fas fa-undo"></i>
+            </StyledButton>
+            </div>
           </div>
-        </div>
-        <div>
-          <StyledButton
-            variant="primary"
-            id="start_stop"
-            onClick={this.startStop}
-          >
-            {this.props.timerStatus == 1 ? (
-              <i class="fas fa-stop"></i>
-            ) : (
-              <i class="fas fa-play"></i>
-            )}
-          </StyledButton>
-          <StyledButton variant="primary" id="reset" onClick={this.reset}>
-            <i class="fas fa-undo"></i>
-          </StyledButton>
-        </div>
+          </div>
         <audio
           id="beep"
           preload="auto"

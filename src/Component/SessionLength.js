@@ -33,7 +33,7 @@ export class SessionLength extends Component {
 
   render() {
     return (
-      <TimerSetting>
+      <React.Fragment>
         <div id="session-label">Session</div>
         <div id="session-length">{`${this.props.sessionLength}`}</div>
         <div>
@@ -52,7 +52,7 @@ export class SessionLength extends Component {
             <i class="fas fa-angle-up"></i>
           </StyledButton>
         </div>
-      </TimerSetting>
+      </React.Fragment>
     );
   }
 }
