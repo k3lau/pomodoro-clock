@@ -23,7 +23,7 @@ export class DisplayTimer extends Component {
     this.reset = this.reset.bind(this);
     this.displayTimeMMSS = this.displayTimeMMSS.bind(this);
     this.buzzer = this.buzzer.bind(this);
-    this.sleep = this.sleep.bind(this);
+    // this.sleep = this.sleep.bind(this);
     //this.clockInterval = this.clockInterval.bind(this);
   }
 
@@ -90,9 +90,9 @@ export class DisplayTimer extends Component {
     return sMinutes + ":" + sSeconds;
   }
 
-  sleep(milliseconds) {
-    return new Promise((resolve) => setTimeout(resolve, milliseconds));
-  }
+  // sleep(milliseconds) {
+  //   return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  // }
 
   timerLabel() {
     return this.props.timerType;
@@ -106,52 +106,91 @@ export class DisplayTimer extends Component {
 
   render() {
     const size = 300;
+    const strokeWidth = 4;
+    const rotation = "clockwise";
+    const elapsedTime = this.props.timeLeft;
+    const duration =
+      this.props.timerType == "Session"
+        ? this.props.sessionLength
+        : this.props.breakLength;
     const wrapperStyle = {
-      position: 'relative',
+      position: "relative",
       width: size,
-      height: size
-    }
+      height: size,
+    };
     const timeStyle = {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'absolute',
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      position: "absolute",
       left: 0,
       top: 0,
-      width: '100%',
-      height: '100%',
-    }
+      width: "100%",
+      height: "100%",
+    };
+    const getPathProps = (size, strokeWidth, rotation) => {
+      const halfSize = size / 2;
+      const halfStrokeWith = strokeWidth / 2;
+      const arcRadius = halfSize - halfStrokeWith;
+      const arcDiameter = 2 * arcRadius;
+      const rotationIndicator = rotation === "clockwise" ? "1,0" : "0,1";
+
+      const pathLength = 2 * Math.PI * arcRadius;
+      const path = `m ${halfSize},${halfStrokeWith}
+              a ${arcRadius},${arcRadius} 0 ${rotationIndicator} 0,${arcDiameter}
+              a ${arcRadius},${arcRadius} 0 ${rotationIndicator} 0,-${arcDiameter}`;
+
+      return { path, pathLength };
+    };
+    const { path, pathLength } = getPathProps(size, strokeWidth, rotation);
+    const linearEase = (time, start, goal, duration) => {
+      if (duration === 0) {
+        return goal;
+      }
+
+      const currentTime = time / duration;
+      return start + goal * currentTime;
+    };
+    const strokeDashoffset = linearEase(elapsedTime, 0, pathLength, duration);
     return (
       <DisplayContainer>
         <div style={wrapperStyle}>
           <svg width={size} height={size} xmlns="https://www.w3.org/2000/svg">
-            
-            <circle stroke="red" stroke-linecap="round" cx={size/2} cy={size/2} r={size/2-4} fill="none" strokeWidth="4"/>
-
+            <circle
+              stroke="red"
+              stroke-linecap="round"
+              cx={size / 2}
+              cy={size / 2}
+              r={size / 2 - 4}
+              fill="none"
+              strokeWidth={strokeWidth}
+              strokeDasharray={pathLength}
+              strokeDashoffset={strokeDashoffset}
+            />
           </svg>
 
           <div style={timeStyle}>
             <div id="timer-label">{this.timerLabel()}</div>
-              <p id="time-left">{this.displayTimeMMSS()}</p>
-              <div>
-            <StyledButton
-              variant="primary"
-              id="start_stop"
-              onClick={this.startStop}
-            >
-              {this.props.timerStatus == 1 ? (
-                <i class="fas fa-stop"></i>
-              ) : (
-                <i class="fas fa-play"></i>
-              )}
-            </StyledButton>
-            <StyledButton variant="primary" id="reset" onClick={this.reset}>
-              <i class="fas fa-undo"></i>
-            </StyledButton>
+            <p id="time-left">{this.displayTimeMMSS()}</p>
+            <div>
+              <StyledButton
+                variant="primary"
+                id="start_stop"
+                onClick={this.startStop}
+              >
+                {this.props.timerStatus == 1 ? (
+                  <i class="fas fa-stop"></i>
+                ) : (
+                  <i class="fas fa-play"></i>
+                )}
+              </StyledButton>
+              <StyledButton variant="primary" id="reset" onClick={this.reset}>
+                <i class="fas fa-undo"></i>
+              </StyledButton>
             </div>
           </div>
-          </div>
+        </div>
         <audio
           id="beep"
           preload="auto"
