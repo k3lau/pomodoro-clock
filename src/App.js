@@ -8,17 +8,17 @@ import styled from "styled-components";
 
 const Layout = styled.div`
   background-color: #f0f0f0;
-  min-height: 700px;
-  max-height: 1024px;
+  width: 100%;
+  height: 100vh;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  align-content: center;
+  justify-content: center;
   align-items: center;
   max-width: 1024px;
   margin: auto;
   border-radius: 10px;
-  padding: 50px;
-  font-size: 1.5em;
+  padding: 10px;
+  font-size: 1em;
 `;
 
 export default class App extends Component {
@@ -27,8 +27,8 @@ export default class App extends Component {
 
     this.state = {
       timeLeft: 1500,
-      breakLength: 5,
-      sessionLength: 25,
+      breakLength: 300,
+      sessionLength: 1500,
       timerStatus: 0,
       timerType: "Session",
       timerID: 0,
@@ -81,26 +81,28 @@ export default class App extends Component {
   render() {
     return (
       <Layout>
-        <BreakLength
-          setBreak={this.setBreak}
-          setTimer={this.setTimeLeft}
-          setTimerStatus={this.setTimerStatus}
-          setTimeLeft={this.setTimeLeft}
-          breakLength={this.state.breakLength}
-          timerStatus={this.state.timerStatus}
-          timeLeft={this.state.timeLeft}
-          timerType={this.state.timerType}
-        ></BreakLength>
-        <SessionLength
-          setSession={this.setSession}
-          setTimer={this.setTimeLeft}
-          setTimerStatus={this.setTimerStatus}
-          setTimeLeft={this.setTimeLeft}
-          sessionLength={this.state.sessionLength}
-          timerStatus={this.state.timerStatus}
-          timeLeft={this.state.timeLeft}
-          timerType={this.state.timerType}
-        ></SessionLength>
+        <div>
+          <BreakLength
+            setBreak={this.setBreak}
+            setTimer={this.setTimeLeft}
+            setTimerStatus={this.setTimerStatus}
+            setTimeLeft={this.setTimeLeft}
+            breakLength={this.state.breakLength}
+            timerStatus={this.state.timerStatus}
+            timeLeft={this.state.timeLeft}
+            timerType={this.state.timerType}
+          ></BreakLength>
+          <SessionLength
+            setSession={this.setSession}
+            setTimer={this.setTimeLeft}
+            setTimerStatus={this.setTimerStatus}
+            setTimeLeft={this.setTimeLeft}
+            sessionLength={this.state.sessionLength}
+            timerStatus={this.state.timerStatus}
+            timeLeft={this.state.timeLeft}
+            timerType={this.state.timerType}
+          ></SessionLength>
+        </div>
         <DisplayTimer
           setTimeLeft={this.setTimeLeft}
           setSession={this.setSession}

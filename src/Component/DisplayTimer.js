@@ -1,19 +1,66 @@
 import React, { Component } from "react";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import { StyledButton } from "./TimerSetting.elements.js";
+import {
+  DisplayContainer,
+  StyledButton,
+  StyledRow,
+  TimerSetting,
+} from "./TimerSetting.elements.js";
 import styled from "styled-components";
+import { displayTimeMMSS } from "../Util/TimeFormat.js";
 
-const DisplayContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: lightblue;
-  width: 100%;
-  padding: 0px;
-`;
+const size = 100;
+const strokeWidth = 4;
+const rotation = "clockwise";
+
+const wrapperStyle = {
+  position: "relative",
+  width: "10em",
+  maxWidth: "100%",
+  height: "100%",
+};
+const timeStyle = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  left: 0,
+  top: 0,
+  width: "100%",
+  height: "100%",
+};
+const getPathProps = (size, strokeWidth, rotation) => {
+  const halfSize = size / 2;
+  const halfStrokeWith = strokeWidth / 2;
+  const arcRadius = halfSize - halfStrokeWith;
+  const arcDiameter = 2 * arcRadius;
+  const rotationIndicator = rotation === "counterclockwise" ? "1,0" : "0,1";
+
+  const pathLength = 2 * Math.PI * arcRadius;
+  const path = `m ${halfSize},${halfStrokeWith}
+              a ${arcRadius},${arcRadius} 0 ${rotationIndicator} 0,${arcDiameter}
+              a ${arcRadius},${arcRadius} 0 ${rotationIndicator} 0,-${arcDiameter}`;
+
+  return { path, pathLength };
+};
+const { path, pathLength } = getPathProps(size, strokeWidth, rotation);
+const strokeDashoffset = (time, start, goal, duration) => {
+  if (duration === 0) {
+    return goal;
+  }
+
+  const currentTime = time / duration;
+  return start + goal * currentTime;
+};
+
+// const strokeDashoffset = linearEase(elapsedTime, 0, pathLength, duration);
+
+const centerStyle = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+};
 
 export class DisplayTimer extends Component {
   constructor(props) {
@@ -21,31 +68,29 @@ export class DisplayTimer extends Component {
 
     this.startStop = this.startStop.bind(this);
     this.reset = this.reset.bind(this);
-    this.displayTimeMMSS = this.displayTimeMMSS.bind(this);
     this.buzzer = this.buzzer.bind(this);
-    // this.sleep = this.sleep.bind(this);
-    //this.clockInterval = this.clockInterval.bind(this);
+    this.duration = this.duration.bind(this);
   }
 
   clockInterval = () => {
     let timerID = setTimeout(() => {
       var timeLeft = this.props.timeLeft;
-      timeLeft = timeLeft - 1;
+      timeLeft = timeLeft - 1 / 60;
       this.props.setTimeLeft(timeLeft);
       this.buzzer(timeLeft);
       if (timeLeft < 0) {
         clearTimeout(this.props.timerID);
         if (this.props.timerType === "Session") {
           this.props.setTimerType("Break");
-          this.props.setTimeLeft(this.props.breakLength * 60);
+          this.props.setTimeLeft(this.props.breakLength);
         } else {
           this.props.setTimerType("Session");
-          this.props.setTimeLeft(this.props.sessionLength * 60);
+          this.props.setTimeLeft(this.props.sessionLength);
         }
         console.log("CHECK HERE");
       }
       this.props.setTimerID(this.clockInterval());
-    }, 1000);
+    }, 1000 / 60);
     return timerID;
   };
 
@@ -81,21 +126,14 @@ export class DisplayTimer extends Component {
     this.props.setTimerStatus(0);
   }
 
-  displayTimeMMSS() {
-    let e = this.props.timeLeft;
-    let sec = Math.floor(e % 60);
-    let min = Math.floor(e / 60);
-    let sMinutes = `${min}`.padStart(2, "0");
-    let sSeconds = `${sec % 60}`.padStart(2, "0");
-    return sMinutes + ":" + sSeconds;
-  }
-
-  // sleep(milliseconds) {
-  //   return new Promise((resolve) => setTimeout(resolve, milliseconds));
-  // }
-
   timerLabel() {
     return this.props.timerType;
+  }
+
+  duration() {
+    return this.props.timerType === "Session"
+      ? this.props.sessionLength * 1000
+      : this.props.breakLength * 1000;
   }
 
   buzzer(_timer) {
@@ -105,102 +143,82 @@ export class DisplayTimer extends Component {
   }
 
   render() {
-    const size = 300;
-    const strokeWidth = 4;
-    const rotation = "clockwise";
-    const elapsedTime = this.props.timeLeft;
-    const duration =
-      this.props.timerType == "Session"
-        ? this.props.sessionLength
-        : this.props.breakLength;
-    const wrapperStyle = {
-      position: "relative",
-      width: size,
-      height: size,
-    };
-    const timeStyle = {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      position: "absolute",
-      left: 0,
-      top: 0,
-      width: "100%",
-      height: "100%",
-    };
-    const getPathProps = (size, strokeWidth, rotation) => {
-      const halfSize = size / 2;
-      const halfStrokeWith = strokeWidth / 2;
-      const arcRadius = halfSize - halfStrokeWith;
-      const arcDiameter = 2 * arcRadius;
-      const rotationIndicator = rotation === "clockwise" ? "1,0" : "0,1";
-
-      const pathLength = 2 * Math.PI * arcRadius;
-      const path = `m ${halfSize},${halfStrokeWith}
-              a ${arcRadius},${arcRadius} 0 ${rotationIndicator} 0,${arcDiameter}
-              a ${arcRadius},${arcRadius} 0 ${rotationIndicator} 0,-${arcDiameter}`;
-
-      return { path, pathLength };
-    };
-    const { path, pathLength } = getPathProps(size, strokeWidth, rotation);
-    const linearEase = (time, start, goal, duration) => {
-      if (duration === 0) {
-        return goal;
-      }
-
-      const currentTime = time / duration;
-      return start + goal * currentTime;
-    };
-    const strokeDashoffset = linearEase(elapsedTime, 0, pathLength, duration);
     return (
-      <DisplayContainer>
-        <div style={wrapperStyle}>
-          <svg width={size} height={size} xmlns="https://www.w3.org/2000/svg">
-            <circle
-              stroke="red"
-              stroke-linecap="round"
-              cx={size / 2}
-              cy={size / 2}
-              r={size / 2 - 4}
-              fill="none"
-              strokeWidth={strokeWidth}
-              strokeDasharray={pathLength}
-              strokeDashoffset={strokeDashoffset}
-            />
-          </svg>
-
-          <div style={timeStyle}>
-            <div id="timer-label">{this.timerLabel()}</div>
-            <p id="time-left">{this.displayTimeMMSS()}</p>
-            <div>
-              <StyledButton
-                variant="primary"
-                id="start_stop"
-                onClick={this.startStop}
-              >
-                {this.props.timerStatus == 1 ? (
-                  <i class="fas fa-stop"></i>
-                ) : (
-                  <i class="fas fa-play"></i>
+      <TimerSetting>
+        <DisplayContainer size={size}>
+          <div style={wrapperStyle}>
+            <svg
+              width="100%"
+              height="100%"
+              preserveAspectRatio="xMinYMin slice"
+              viewBox="0 0 100 100"
+              xmlns="https://www.w3.org/2000/svg"
+            >
+              <path
+                d={path}
+                stroke="grey"
+                stroke-linecap="round"
+                cx={size / 2}
+                cy={size / 2}
+                r={size / 2 - 4}
+                strokeWidth={strokeWidth}
+                fill="none"
+              />
+              <path
+                d={path}
+                stroke="red"
+                stroke-linecap="round"
+                cx={size / 2}
+                cy={size / 2}
+                r={size / 2 - 4}
+                fill="none"
+                strokeWidth={strokeWidth}
+                strokeDasharray={pathLength}
+                strokeDashoffset={strokeDashoffset(
+                  this.props.timeLeft * 1000,
+                  0,
+                  pathLength,
+                  this.duration()
                 )}
-              </StyledButton>
-              <StyledButton variant="primary" id="reset" onClick={this.reset}>
-                <i class="fas fa-undo"></i>
-              </StyledButton>
+              />
+            </svg>
+
+            <div style={timeStyle}>
+              <div id="timer-label">{this.timerLabel()}</div>
+              <p id="time-left">{displayTimeMMSS(this.props.timeLeft)}</p>
+              <StyledRow>
+                <StyledButton
+                  variant="primary"
+                  id="start_stop"
+                  onClick={this.startStop}
+                >
+                  <div style={centerStyle}>
+                    {this.props.timerStatus === 1 ? (
+                      <i class="fas fa-stop fa-sm"></i>
+                    ) : (
+                      <i class="fas fa-play fa-sm"></i>
+                    )}
+                  </div>
+                </StyledButton>
+                <StyledButton variant="primary" id="reset" onClick={this.reset}>
+                  <div style={centerStyle}>
+                    <i class="fas fa-undo fa-sm"></i>
+                  </div>
+                </StyledButton>
+              </StyledRow>
             </div>
           </div>
-        </div>
-        <audio
-          id="beep"
-          preload="auto"
-          ref={(audio) => {
-            this.audioBeep = audio;
-          }}
-          src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
-          //src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
-        ></audio>
-      </DisplayContainer>
+          <audio
+            id="beep"
+            preload="auto"
+            ref={(audio) => {
+              this.audioBeep = audio;
+            }}
+            src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+            //src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
+          ></audio>
+        </DisplayContainer>
+      </TimerSetting>
     );
   }
 }

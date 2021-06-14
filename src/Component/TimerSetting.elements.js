@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
 
 export const TimerSetting = styled.div`
   display: flex;
@@ -7,17 +8,22 @@ export const TimerSetting = styled.div`
   justify-content: center;
   align-items: center;
   background: lightblue;
-  width: 50%;
-  padding: 0px;
+  width: 200px;
+  padding: 20px;
 `;
 
-const size = "2.5";
+const size = "1";
 export const StyledButton = styled(Button)`
-  width: ${size}em;
-  height: ${size}em;
-  border-radius: ${size / 2}em;
-  display: inline-block;
-  text-align: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 2px;
+  padding: 0;
+  border: 0;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   background-color: transparent;
   color: #404040;
@@ -47,3 +53,28 @@ export const StyledButton = styled(Button)`
     border: 2px solid #ababab;
   }
 `;
+
+export const DisplayContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: lightblue;
+  width: ${(props) => props.size};
+  height: ${(props) => props.size};
+  padding: 0.2em;
+  border-radius: 50%;
+  box-shadow: 0.25rem 0.25rem 1.5rem rgba(0, 0, 0, 0.6);
+`;
+
+export const SettingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: lightgrey;
+  padding: 0.5em 2em 0.5em 2em;
+  border-radius: 10%;
+`;
+
+export const StyledRow = Row;

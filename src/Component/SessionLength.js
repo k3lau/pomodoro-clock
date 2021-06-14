@@ -1,8 +1,12 @@
 import React, { Component } from "react";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import { TimerSetting, StyledButton } from "./TimerSetting.elements";
+import {
+  TimerSetting,
+  SettingContainer,
+  StyledButton,
+  StyledRow,
+} from "./TimerSetting.elements";
+import { displayTimeMMSS } from "../Util/TimeFormat";
+import { DisplayTimer } from "./DisplayTimer";
 
 export class SessionLength extends Component {
   constructor(props) {
@@ -12,8 +16,8 @@ export class SessionLength extends Component {
   }
 
   decre() {
-    var time = this.props.sessionLength - 1;
-    if (time >= 1) {
+    var time = this.props.sessionLength - 60;
+    if (time >= 10) {
       this.props.setSession(time);
       if (this.props.timerType === "Session") {
         this.props.setTimeLeft(this.props.timeLeft - 60);
@@ -22,8 +26,8 @@ export class SessionLength extends Component {
   }
 
   incre() {
-    var time = this.props.sessionLength + 1;
-    if (time <= 60) {
+    var time = this.props.sessionLength + 60;
+    if (time <= 3600) {
       this.props.setSession(time);
       if (this.props.timerType === "Session") {
         this.props.setTimeLeft(this.props.timeLeft + 60);
@@ -33,26 +37,30 @@ export class SessionLength extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <div id="session-label">Session</div>
-        <div id="session-length">{`${this.props.sessionLength}`}</div>
-        <div>
-          <StyledButton
-            variant="primary"
-            id="session-decrement"
-            onClick={this.decre}
-          >
-            <i class="fas fa-angle-down"></i>
-          </StyledButton>
-          <StyledButton
-            variant="primary"
-            id="session-increment"
-            onClick={this.incre}
-          >
-            <i class="fas fa-angle-up"></i>
-          </StyledButton>
-        </div>
-      </React.Fragment>
+      <TimerSetting>
+        <SettingContainer>
+          <div id="session-label">Session</div>
+          <div id="session-length">{`${displayTimeMMSS(
+            this.props.sessionLength
+          )}`}</div>
+          <StyledRow>
+            <StyledButton
+              variant="primary"
+              id="session-decrement"
+              onClick={this.decre}
+            >
+              <i class="fas fa-angle-down"></i>
+            </StyledButton>
+            <StyledButton
+              variant="primary"
+              id="session-increment"
+              onClick={this.incre}
+            >
+              <i class="fas fa-angle-up"></i>
+            </StyledButton>
+          </StyledRow>
+        </SettingContainer>
+      </TimerSetting>
     );
   }
 }
