@@ -4,6 +4,7 @@ import {
   StyledButton,
   StyledRow,
   TimerSetting,
+  TimeFormat,
 } from "./TimerSetting.elements.js";
 import styled from "styled-components";
 import { displayTimeMMSS } from "../Util/TimeFormat.js";
@@ -185,25 +186,23 @@ export class DisplayTimer extends Component {
 
             <div style={timeStyle}>
               <div id="timer-label">{this.timerLabel()}</div>
-              <p id="time-left">{displayTimeMMSS(this.props.timeLeft)}</p>
+              <TimeFormat id="time-left">
+                {displayTimeMMSS(this.props.timeLeft)}
+              </TimeFormat>
               <StyledRow>
                 <StyledButton
                   variant="primary"
                   id="start_stop"
                   onClick={this.startStop}
                 >
-                  <div style={centerStyle}>
-                    {this.props.timerStatus === 1 ? (
-                      <i class="fas fa-stop fa-sm"></i>
-                    ) : (
-                      <i class="fas fa-play fa-sm"></i>
-                    )}
-                  </div>
+                  {this.props.timerStatus === 1 ? (
+                    <i class="fas fa-stop fa-sm"></i>
+                  ) : (
+                    <i class="fas fa-play fa-sm"></i>
+                  )}
                 </StyledButton>
                 <StyledButton variant="primary" id="reset" onClick={this.reset}>
-                  <div style={centerStyle}>
-                    <i class="fas fa-undo fa-sm"></i>
-                  </div>
+                  <i class="fas fa-undo fa-sm"></i>
                 </StyledButton>
               </StyledRow>
             </div>

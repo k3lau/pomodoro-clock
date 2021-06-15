@@ -4,6 +4,7 @@ import {
   SettingContainer,
   StyledButton,
   StyledRow,
+  TimeFormat,
 } from "./TimerSetting.elements";
 import { displayTimeMMSS } from "../Util/TimeFormat";
 import { DisplayTimer } from "./DisplayTimer";
@@ -37,30 +38,29 @@ export class SessionLength extends Component {
 
   render() {
     return (
-      <TimerSetting>
-        <SettingContainer>
-          <div id="session-label">Session</div>
-          <div id="session-length">{`${displayTimeMMSS(
+      <SettingContainer>
+        <div id="session-label">Session</div>
+        <StyledRow>
+          <StyledButton
+            variant="primary"
+            id="session-decrement"
+            onClick={this.decre}
+          >
+            <i class="fas fa-angle-down fa-sm"></i>
+          </StyledButton>
+          <TimeFormat id="session-length">{`${displayTimeMMSS(
             this.props.sessionLength
-          )}`}</div>
-          <StyledRow>
-            <StyledButton
-              variant="primary"
-              id="session-decrement"
-              onClick={this.decre}
-            >
-              <i class="fas fa-angle-down"></i>
-            </StyledButton>
-            <StyledButton
-              variant="primary"
-              id="session-increment"
-              onClick={this.incre}
-            >
-              <i class="fas fa-angle-up"></i>
-            </StyledButton>
-          </StyledRow>
-        </SettingContainer>
-      </TimerSetting>
+          )}`}</TimeFormat>
+
+          <StyledButton
+            variant="primary"
+            id="session-increment"
+            onClick={this.incre}
+          >
+            <i class="fas fa-angle-up fa-sm"></i>
+          </StyledButton>
+        </StyledRow>
+      </SettingContainer>
     );
   }
 }

@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
+import Container from "react-bootstrap/Container";
 
 export const TimerSetting = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  background: lightblue;
   width: 200px;
   padding: 20px;
 `;
@@ -17,7 +17,7 @@ export const StyledButton = styled(Button)`
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  margin: 2px;
+  margin: 4px;
   padding: 0;
   border: 0;
   font-size: 1em;
@@ -59,7 +59,6 @@ export const DisplayContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: lightblue;
   width: ${(props) => props.size};
   height: ${(props) => props.size};
   padding: 0.2em;
@@ -72,9 +71,42 @@ export const SettingContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: lightgrey;
   padding: 0.5em 2em 0.5em 2em;
+  margin: 0.5em 2em 0.5em 2em;
   border-radius: 10%;
+  box-shadow: 0.5rem 0.5rem 2.5rem rgba(0, 0, 0, 0.6);
 `;
 
-export const StyledRow = Row;
+export const StyledRow = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Layout = styled.div`
+  background-color: #f0f0f0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 300px;
+  max-width: 1024px;
+  margin: auto;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 1em;
+  background: linear-gradient(to bottom right, #e9ebf0, #c9ccd4);
+`;
+
+export const TimeFormat = styled.div`
+  font-family: Roboto;
+`;
+
+export const Paragraph = styled.p`
+  font-family: Noto Sans;
+  font-weight: normal;
+  text-align: center;
+`;

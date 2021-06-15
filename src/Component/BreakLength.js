@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import {
   TimerSetting,
+  SettingContainer,
   StyledButton,
   StyledRow,
+  TimeFormat,
 } from "./TimerSetting.elements.js";
 import { displayTimeMMSS } from "../Util/TimeFormat";
 
@@ -35,12 +37,8 @@ export class BreakLength extends Component {
 
   render() {
     return (
-      <TimerSetting>
+      <SettingContainer>
         <div id="break-label">Break</div>
-
-        <div id="break-length">{`${displayTimeMMSS(
-          this.props.breakLength
-        )}`}</div>
         <StyledRow>
           <StyledButton
             variant="primary"
@@ -49,6 +47,9 @@ export class BreakLength extends Component {
           >
             <i class="fas fa-angle-down fa-sm"></i>
           </StyledButton>
+          <TimeFormat id="break-length">{`${displayTimeMMSS(
+            this.props.breakLength
+          )}`}</TimeFormat>
           <StyledButton
             variant="primary"
             id="break-increment"
@@ -57,7 +58,7 @@ export class BreakLength extends Component {
             <i class="fas fa-angle-up fa-sm"></i>
           </StyledButton>
         </StyledRow>
-      </TimerSetting>
+      </SettingContainer>
     );
   }
 }
