@@ -85,7 +85,6 @@ export const StyledRow = styled.div`
 `;
 
 export const Layout = styled.div`
-  background-color: #f0f0f0;
   width: 100%;
   height: 100vh;
   display: flex;
@@ -98,7 +97,6 @@ export const Layout = styled.div`
   border-radius: 10px;
   padding: 10px;
   font-size: 1em;
-  background: linear-gradient(to bottom right, #e9ebf0, #c9ccd4);
 `;
 
 export const TimeFormat = styled.div`
