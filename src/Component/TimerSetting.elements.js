@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
 
 export const TimerSetting = styled.div`
   display: flex;
@@ -12,7 +10,6 @@ export const TimerSetting = styled.div`
   padding: 20px;
 `;
 
-const size = "1";
 export const StyledButton = styled(Button)`
   width: 30px;
   height: 30px;
@@ -73,7 +70,7 @@ export const SettingContainer = styled.div`
   align-items: center;
   padding: 0.5em 2em 0.5em 2em;
   margin: 0.5em 2em 0.5em 2em;
-  border-radius: 10%;
+  border-radius: 0.5em;
   box-shadow: 0.5rem 0.5rem 2.5rem rgba(0, 0, 0, 0.6);
 `;
 

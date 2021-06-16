@@ -4,7 +4,6 @@ import { BreakLength } from "./Component/BreakLength";
 import { SessionLength } from "./Component/SessionLength";
 import { DisplayTimer } from "./Component/DisplayTimer";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styled from "styled-components";
 import {
   Layout,
   StyledRow,

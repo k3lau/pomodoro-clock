@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import {
-  TimerSetting,
   SettingContainer,
   StyledButton,
   StyledRow,
   TimeFormat,
 } from "./TimerSetting.elements";
 import { displayTimeMMSS } from "../Util/TimeFormat";
-import { DisplayTimer } from "./DisplayTimer";
 
 export class SessionLength extends Component {
   constructor(props) {
@@ -46,7 +44,7 @@ export class SessionLength extends Component {
             id="session-decrement"
             onClick={this.decre}
           >
-            <i class="fas fa-angle-down fa-sm"></i>
+            <i className="fas fa-angle-down fa-sm"></i>
           </StyledButton>
           <TimeFormat id="session-length">{`${displayTimeMMSS(
             this.props.sessionLength
@@ -57,7 +55,7 @@ export class SessionLength extends Component {
             id="session-increment"
             onClick={this.incre}
           >
-            <i class="fas fa-angle-up fa-sm"></i>
+            <i className="fas fa-angle-up fa-sm"></i>
           </StyledButton>
         </StyledRow>
       </SettingContainer>

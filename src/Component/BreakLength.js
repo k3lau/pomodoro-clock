@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  TimerSetting,
   SettingContainer,
   StyledButton,
   StyledRow,
@@ -45,7 +44,7 @@ export class BreakLength extends Component {
             id="break-decrement"
             onClick={this.decre}
           >
-            <i class="fas fa-angle-down fa-sm"></i>
+            <i className="fas fa-angle-down fa-sm"></i>
           </StyledButton>
           <TimeFormat id="break-length">{`${displayTimeMMSS(
             this.props.breakLength
@@ -55,7 +54,7 @@ export class BreakLength extends Component {
             id="break-increment"
             onClick={this.incre}
           >
-            <i class="fas fa-angle-up fa-sm"></i>
+            <i className="fas fa-angle-up fa-sm"></i>
           </StyledButton>
         </StyledRow>
       </SettingContainer>

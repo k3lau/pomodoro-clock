@@ -6,7 +6,6 @@ import {
   TimerSetting,
   TimeFormat,
 } from "./TimerSetting.elements.js";
-import styled from "styled-components";
 import { displayTimeMMSS } from "../Util/TimeFormat.js";
 
 const size = 100;
@@ -56,13 +55,6 @@ const strokeDashoffset = (time, start, goal, duration) => {
 
 // const strokeDashoffset = linearEase(elapsedTime, 0, pathLength, duration);
 
-const centerStyle = {
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-};
-
 export class DisplayTimer extends Component {
   constructor(props) {
     super(props);
@@ -110,19 +102,13 @@ export class DisplayTimer extends Component {
   }
 
   reset() {
-    this.props.setBreak(5);
-    this.props.setSession(25);
+    this.props.setBreak(300);
+    this.props.setSession(1500);
     this.props.setTimeLeft(1500);
     this.props.setTimerType("Session");
     clearTimeout(this.props.timerID);
-    //console.log(`readyState ${this.audioBeep.readyState}`);
-    //console.log(`paused ${this.audioBeep.paused}`);
-    //console.log(`ended ${this.audioBeep.ended}`);
-    //console.log(`currentTime ${this.audioBeep.currentTime}`);
-    //if (this.audioBeep.currentTime > 0 && !this.audioBeep.paused && !this.audioBeep.ended && this.audioBeep.readyState > 2) {
-    //  if (this.audioBeep.currentTime > 0 && !this.audioBeep.paused && !this.audioBeep.ended && this.audioBeep.readyState > 0) {
+
     this.audioBeep.pause();
-    //}
     this.audioBeep.currentTime = 0;
     this.props.setTimerStatus(0);
   }
@@ -158,7 +144,7 @@ export class DisplayTimer extends Component {
               <path
                 d={path}
                 stroke="grey"
-                stroke-linecap="round"
+                strokeLinecap="round"
                 cx={size / 2}
                 cy={size / 2}
                 r={size / 2 - 4}
@@ -168,7 +154,7 @@ export class DisplayTimer extends Component {
               <path
                 d={path}
                 stroke="red"
-                stroke-linecap="round"
+                strokeLinecap="round"
                 cx={size / 2}
                 cy={size / 2}
                 r={size / 2 - 4}
@@ -196,13 +182,13 @@ export class DisplayTimer extends Component {
                   onClick={this.startStop}
                 >
                   {this.props.timerStatus === 1 ? (
-                    <i class="fas fa-stop fa-sm"></i>
+                    <i className="fas fa-stop fa-sm"></i>
                   ) : (
-                    <i class="fas fa-play fa-sm"></i>
+                    <i className="fas fa-play fa-sm"></i>
                   )}
                 </StyledButton>
                 <StyledButton variant="primary" id="reset" onClick={this.reset}>
-                  <i class="fas fa-undo fa-sm"></i>
+                  <i className="fas fa-undo fa-sm"></i>
                 </StyledButton>
               </StyledRow>
             </div>
@@ -213,8 +199,8 @@ export class DisplayTimer extends Component {
             ref={(audio) => {
               this.audioBeep = audio;
             }}
-            src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
-            //src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
+            //src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+            src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
           ></audio>
         </DisplayContainer>
       </TimerSetting>
