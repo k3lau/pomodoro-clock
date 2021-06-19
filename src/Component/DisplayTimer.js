@@ -63,24 +63,45 @@ export class DisplayTimer extends Component {
     this.reset = this.reset.bind(this);
     this.buzzer = this.buzzer.bind(this);
     this.duration = this.duration.bind(this);
+
+    this.state = {
+      currentIndex: this.props.timerList.findIndex(
+        (item) => item.id === this.props.timerType
+      ),
+    };
   }
 
   clockInterval = () => {
+    let timeScale = 1;
     let timerID = setTimeout(() => {
       var timeLeft = this.props.timeLeft;
-      timeLeft = timeLeft - 1 / 60;
+      timeLeft = timeLeft - 1 / timeScale;
       this.props.setTimeLeft(timeLeft);
       this.buzzer(timeLeft);
       if (timeLeft < 0) {
         clearTimeout(this.props.timerID);
-        if (this.props.timerType === "Session") {
-          this.props.setTimerType("Break");
-          this.props.setTimeLeft(this.props.breakLength);
+        // if (this.props.timerType === "Session") {
+        //   this.props.setTimerType("Break");
+        //   this.props.setTimeLeft(this.props.breakLength);
+        // } else {
+        //   this.props.setTimerType("Session");
+        //   this.props.setTimeLeft(this.props.sessionLength);
+        // }
+        if (this.state.currentIndex < this.props.timerList.length - 1) {
+          this.setState((state) => {
+            return { currentIndex: state.currentIndex + 1 };
+          });
         } else {
-          this.props.setTimerType("Session");
-          this.props.setTimeLeft(this.props.sessionLength);
+          this.setState({
+            currentIndex: 0,
+          });
         }
-        console.log("CHECK HERE");
+        this.props.setTimerType(
+          this.props.timerList[this.state.currentIndex].id
+        );
+        this.props.setTimeLeft(
+          this.props.timerList[this.state.currentIndex].length
+        );
       }
       this.props.setTimerID(this.clockInterval());
     }, 1000 / 60);
@@ -89,7 +110,7 @@ export class DisplayTimer extends Component {
 
   startStop(e = 0) {
     let status = this.props.timerStatus;
-    console.log(`Button ${status} and ${e}`);
+
     if (status === 0) {
       let timerID = this.clockInterval();
       this.props.setTimerID(timerID);
@@ -102,8 +123,8 @@ export class DisplayTimer extends Component {
   }
 
   reset() {
-    this.props.setBreak(300);
-    this.props.setSession(1500);
+    this.props.setLength("Break", 300);
+    this.props.setLength("Session", 1500);
     this.props.setTimeLeft(1500);
     this.props.setTimerType("Session");
     clearTimeout(this.props.timerID);
@@ -118,13 +139,11 @@ export class DisplayTimer extends Component {
   }
 
   duration() {
-    return this.props.timerType === "Session"
-      ? this.props.sessionLength * 1000
-      : this.props.breakLength * 1000;
+    return this.props.timerList[this.state.currentIndex].length * 1000;
   }
 
   buzzer(_timer) {
-    if (_timer === 0) {
+    if (_timer <= 0) {
       this.audioBeep.play();
     }
   }

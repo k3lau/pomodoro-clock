@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { Component } from "react";
-import { BreakLength } from "./Component/BreakLength";
-import { SessionLength } from "./Component/SessionLength";
+import { TimerControl } from "./Component/TimerControl";
 import { DisplayTimer } from "./Component/DisplayTimer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -21,6 +20,23 @@ export default class App extends Component {
       timerStatus: 0,
       timerType: "Session",
       timerID: 0,
+      timerList: [
+        {
+          id: "Session",
+          order: 1,
+          length: 25 * 60,
+        },
+        {
+          id: "Break",
+          order: 2,
+          length: 5 * 60,
+        },
+        {
+          id: "Long Break",
+          order: 2,
+          length: 5 * 60,
+        },
+      ],
     };
 
     this.setBreak = this.setBreak.bind(this);
@@ -29,6 +45,18 @@ export default class App extends Component {
     this.setTimerStatus = this.setTimerStatus.bind(this);
     this.setTimerType = this.setTimerType.bind(this);
     this.setTimerID = this.setTimerID.bind(this);
+    this.setLength = this.setLength.bind(this);
+  }
+
+  setLength(id, time) {
+    let timers = [...this.state.timerList];
+    let index = timers.findIndex((item) => item.id === id);
+    let timer = { ...timers[index] };
+    timer.length = time;
+    timers[index] = timer;
+    this.setState({
+      timerList: timers,
+    });
   }
 
   setBreak(e) {
@@ -78,13 +106,11 @@ export default class App extends Component {
         <StyledRow>
           <DisplayTimer
             setTimeLeft={this.setTimeLeft}
-            setSession={this.setSession}
-            setBreak={this.setBreak}
+            setLength={this.setLength}
             setTimerStatus={this.setTimerStatus}
             setTimerType={this.setTimerType}
             setTimerID={this.setTimerID}
-            breakLength={this.state.breakLength}
-            sessionLength={this.state.sessionLength}
+            timerList={this.state.timerList}
             timerStatus={this.state.timerStatus}
             timeLeft={this.state.timeLeft}
             timerType={this.state.timerType}
@@ -92,26 +118,18 @@ export default class App extends Component {
           ></DisplayTimer>
         </StyledRow>
         <StyledRow>
-          <BreakLength
-            setBreak={this.setBreak}
-            setTimer={this.setTimeLeft}
-            setTimerStatus={this.setTimerStatus}
-            setTimeLeft={this.setTimeLeft}
-            breakLength={this.state.breakLength}
-            timerStatus={this.state.timerStatus}
-            timeLeft={this.state.timeLeft}
-            timerType={this.state.timerType}
-          ></BreakLength>
-          <SessionLength
-            setSession={this.setSession}
-            setTimer={this.setTimeLeft}
-            setTimerStatus={this.setTimerStatus}
-            setTimeLeft={this.setTimeLeft}
-            sessionLength={this.state.sessionLength}
-            timerStatus={this.state.timerStatus}
-            timeLeft={this.state.timeLeft}
-            timerType={this.state.timerType}
-          ></SessionLength>
+          {this.state.timerList.map((item) => (
+            <TimerControl
+              key={item.id}
+              id={item.id}
+              length={item.length}
+              setLength={this.setLength}
+              setTimeLeft={this.setTimeLeft}
+              breakLength={this.state.breakLength}
+              timeLeft={this.state.timeLeft}
+              timerType={this.state.timerType}
+            ></TimerControl>
+          ))}
         </StyledRow>
       </Layout>
     );
