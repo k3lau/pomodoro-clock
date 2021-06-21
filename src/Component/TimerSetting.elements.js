@@ -81,11 +81,18 @@ export const StyledRow = styled.div`
   justify-content: center;
 `;
 
+export const StyledCol = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const Layout = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   min-width: 300px;
