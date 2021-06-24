@@ -70,8 +70,9 @@ export const SettingContainer = styled.div`
   align-items: center;
   padding: 0.5em 2em 0.5em 2em;
   margin: 0.5em 2em 0.5em 2em;
+  background-color: transparent;
   border-radius: 0.5em;
-  box-shadow: 0.5rem 0.5rem 2.5rem rgba(0, 0, 0, 0.6);
+  box-shadow: 0.1rem 0.1rem 0.5rem rgba(0, 0, 0, 0.6);
 `;
 
 export const StyledRow = styled.div`
@@ -111,4 +112,15 @@ export const Paragraph = styled.p`
   font-family: Noto Sans;
   font-weight: normal;
   text-align: center;
+`;
+
+export const SettingWrapper = styled.div`
+  width: 100%;
+  max-height: auto;
+  overflow: auto;
+  padding: 4px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
 `;

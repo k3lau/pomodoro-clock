@@ -36,13 +36,7 @@ export class TimerControl extends Component {
 
   render() {
     return (
-      <SettingContainer
-        draggable={true}
-        id={this.props.order}
-        onDragOver={(e) => e.preventDefault()}
-        onDragStart={this.props.handleDrag}
-        onDrop={this.props.handleDrop}
-      >
+      <SettingContainer>
         <div id={this.props.id}>{this.props.id}</div>
         <StyledRow>
           <StyledButton variant="primary" onClick={this.decre}>

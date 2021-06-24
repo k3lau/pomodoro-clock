@@ -8,7 +8,9 @@ import {
   StyledRow,
   StyledCol,
   Paragraph,
+  SettingWrapper,
 } from "./Component/TimerSetting.elements";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 export default class App extends Component {
   constructor(props) {
@@ -50,6 +52,7 @@ export default class App extends Component {
     this.setLength = this.setLength.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   handleDrag(e) {
@@ -60,7 +63,6 @@ export default class App extends Component {
 
   handleDrop(e) {
     let timers = [...this.state.timerList];
-    console.log(`${typeof this.state.dragID} and ${typeof e.currentTarget.id}`);
     if (
       typeof this.state.dragID === "undefined" ||
       typeof e.currentTarget.id === "undefined"
@@ -77,20 +79,11 @@ export default class App extends Component {
     const dragBoxOrder = dragBox.order;
     const dropBoxOrder = dropBox.order;
 
-    console.info(timers);
     const newBoxState = timers.map((item) => {
-      console.log(`${item.id} and ${item.order} and ${typeof item.order}`);
-      console.log(`${this.state.dragID} and ${typeof this.state.dragID}`);
-      console.log(`${e.currentTarget.id} and ${typeof e.currentTarget.id}`);
-      console.log(
-        `dragbox order ${dragBoxOrder} and dropbox order ${dropBoxOrder}`
-      );
       if (item.order.toString() === this.state.dragID) {
         item.order = dropBoxOrder;
-        console.log(`${item.id} change to ${dropBoxOrder}`);
       } else {
         if (item.order.toString() === e.currentTarget.id) {
-          console.log(`${item.id} change to ${dragBoxOrder}`);
           item.order = dragBoxOrder;
         }
       }
@@ -149,6 +142,21 @@ export default class App extends Component {
     });
   }
 
+  onDragEnd(result) {
+    const { source, destination } = result;
+    // dropped outside the list
+    if (!destination) {
+      return;
+    }
+    // reordering the list
+    const items = Array.from(this.state.timerList);
+    const [reorderedItem] = items.splice(source.index, 1);
+    items.splice(destination.index, 0, reorderedItem);
+    this.setState({
+      timerList: items,
+    });
+  }
+
   render() {
     return (
       <Layout>
@@ -164,39 +172,58 @@ export default class App extends Component {
           </Paragraph>
         </StyledRow>
         <StyledRow>
-          <StyledCol>
-            <DisplayTimer
-              setTimeLeft={this.setTimeLeft}
-              setLength={this.setLength}
-              setTimerStatus={this.setTimerStatus}
-              setTimerType={this.setTimerType}
-              setTimerID={this.setTimerID}
-              timerList={this.state.timerList}
-              timerStatus={this.state.timerStatus}
-              timeLeft={this.state.timeLeft}
-              timerType={this.state.timerType}
-              timerID={this.state.timerID}
-            ></DisplayTimer>
-          </StyledCol>
-          <StyledCol>
-            {this.state.timerList
-              .sort((a, b) => a.order - b.order)
-              .map((item) => (
-                <TimerControl
-                  key={item.id}
-                  id={item.id}
-                  order={item.order}
-                  length={item.length}
-                  setLength={this.setLength}
-                  setTimeLeft={this.setTimeLeft}
-                  breakLength={this.state.breakLength}
-                  timeLeft={this.state.timeLeft}
-                  timerType={this.state.timerType}
-                  handleDrag={this.handleDrag}
-                  handleDrop={this.handleDrop}
-                ></TimerControl>
-              ))}
-          </StyledCol>
+          <DragDropContext onDragEnd={this.onDragEnd}>
+            <Droppable droppableId="timerSettings" direction="horizontal">
+              {(provided) => (
+                <SettingWrapper
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {this.state.timerList.map((item, index) => (
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <TimerControl
+                            id={item.id}
+                            order={item.order}
+                            length={item.length}
+                            setLength={this.setLength}
+                            setTimeLeft={this.setTimeLeft}
+                            breakLength={this.state.breakLength}
+                            timeLeft={this.state.timeLeft}
+                            timerType={this.state.timerType}
+                          ></TimerControl>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </SettingWrapper>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </StyledRow>
+        <StyledRow>
+          <DisplayTimer
+            setTimeLeft={this.setTimeLeft}
+            setLength={this.setLength}
+            setTimerStatus={this.setTimerStatus}
+            setTimerType={this.setTimerType}
+            setTimerID={this.setTimerID}
+            timerList={this.state.timerList}
+            timerStatus={this.state.timerStatus}
+            timeLeft={this.state.timeLeft}
+            timerType={this.state.timerType}
+            timerID={this.state.timerID}
+          ></DisplayTimer>
         </StyledRow>
       </Layout>
     );
