@@ -66,7 +66,7 @@ export class DisplayTimer extends Component {
 
     this.state = {
       currentIndex: this.props.timerList.findIndex(
-        (item) => item.id === this.props.timerType
+        (item) => item.order === this.props.timerType
       ),
     };
   }
@@ -97,7 +97,7 @@ export class DisplayTimer extends Component {
           });
         }
         this.props.setTimerType(
-          this.props.timerList[this.state.currentIndex].id
+          this.props.timerList[this.state.currentIndex].order
         );
         this.props.setTimeLeft(
           this.props.timerList[this.state.currentIndex].length
@@ -126,7 +126,7 @@ export class DisplayTimer extends Component {
     this.props.setLength("Break", 300);
     this.props.setLength("Session", 1500);
     this.props.setTimeLeft(1500);
-    this.props.setTimerType("Session");
+    this.props.setTimerType(1);
     clearTimeout(this.props.timerID);
 
     this.audioBeep.pause();
@@ -135,7 +135,13 @@ export class DisplayTimer extends Component {
   }
 
   timerLabel() {
-    return this.props.timerType;
+    const timers = [...this.props.timerList];
+    const label = timers.find((item) => {
+      if (item.order === this.props.timerType) {
+        return item;
+      }
+    });
+    return label.name;
   }
 
   duration() {

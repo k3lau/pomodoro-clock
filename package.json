@@ -1,6 +1,6 @@
 {
-  "homepage": "http://k3lau.github.io/podomoro-clock",
-  "name": "podomoro-clock",
+  "homepage": "http://k3lau.github.io/pomodoro-clock",
+  "name": "pomodoro-clock",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

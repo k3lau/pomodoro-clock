@@ -11,12 +11,11 @@ export const TimerSetting = styled.div`
 `;
 
 export const StyledButton = styled(Button)`
-  width: 30px;
-  height: 30px;
+  width: ${(props) => (props.variant === "primary" && "2em") || "1.2em"};
+  height: ${(props) => (props.variant === "primary" && "2em") || "1.2em"};
   border-radius: 50%;
-  margin: 4px;
-  padding: 0;
-  border: 0;
+  margin: 0em 0.5em;
+  padding: 0.5em;
   font-size: 1em;
   display: flex;
   align-items: center;
@@ -24,7 +23,8 @@ export const StyledButton = styled(Button)`
 
   background-color: transparent;
   color: #404040;
-  border: 2px solid #404040;
+  border: ${(props) =>
+    (props.variant === "primary" && "2px solid") || "1px solid #404040"};
 
   &:focus,
   &:active:focus {
@@ -65,7 +65,7 @@ export const DisplayContainer = styled.div`
 
 export const SettingContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   padding: 0.5em 2em 0.5em 2em;
@@ -91,6 +91,7 @@ export const StyledCol = styled.div`
 
 export const Layout = styled.div`
   width: 100%;
+  max-width: 100vh;
   height: 100vh;
   display: flex;
   flex-flow: column wrap;
@@ -120,7 +121,7 @@ export const SettingWrapper = styled.div`
   overflow: auto;
   padding: 4px;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: center;
   align-items: center;
 `;

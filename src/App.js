@@ -2,6 +2,7 @@ import "./App.css";
 import React, { Component } from "react";
 import { TimerControl } from "./Component/TimerControl";
 import { DisplayTimer } from "./Component/DisplayTimer";
+import AddSetting from "./Component/AddSetting";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Layout,
@@ -11,6 +12,7 @@ import {
   SettingWrapper,
 } from "./Component/TimerSetting.elements";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import uniqueId from "lodash/uniqueId";
 
 export default class App extends Component {
   constructor(props) {
@@ -21,21 +23,24 @@ export default class App extends Component {
       breakLength: 300,
       sessionLength: 1500,
       timerStatus: 0,
-      timerType: "Session",
+      timerType: 1,
       timerID: 0,
       timerList: [
         {
-          id: "Session",
+          id: uniqueId(),
+          name: "Session",
           order: 1,
           length: 25 * 60,
         },
         {
-          id: "Break",
+          id: uniqueId(),
+          name: "Break",
           order: 2,
           length: 5 * 60,
         },
         {
-          id: "Long Break",
+          id: uniqueId(),
+          name: "Long Break",
           order: 3,
           length: 5 * 60,
         },
@@ -53,6 +58,7 @@ export default class App extends Component {
     this.handleDrag = this.handleDrag.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.setTimerItem = this.setTimerItem.bind(this);
   }
 
   handleDrag(e) {
@@ -89,7 +95,20 @@ export default class App extends Component {
       }
       return item;
     });
-    console.info(newBoxState);
+
+    this.setState({
+      timerList: newBoxState,
+    });
+  }
+
+  setTimerItem(modifiedItem) {
+    let timers = [...this.state.timerList];
+    const newBoxState = timers.map((item) => {
+      if (item.id === modifiedItem.id) {
+        item = { ...modifiedItem };
+      }
+      return item;
+    });
     this.setState({
       timerList: newBoxState,
     });
@@ -172,6 +191,9 @@ export default class App extends Component {
           </Paragraph>
         </StyledRow>
         <StyledRow>
+          <AddSetting />
+        </StyledRow>
+        <StyledRow>
           <DragDropContext onDragEnd={this.onDragEnd}>
             <Droppable droppableId="timerSettings" direction="horizontal">
               {(provided) => (
@@ -179,32 +201,35 @@ export default class App extends Component {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  {this.state.timerList.map((item, index) => (
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <TimerControl
-                            id={item.id}
-                            order={item.order}
-                            length={item.length}
-                            setLength={this.setLength}
-                            setTimeLeft={this.setTimeLeft}
-                            breakLength={this.state.breakLength}
-                            timeLeft={this.state.timeLeft}
-                            timerType={this.state.timerType}
-                          ></TimerControl>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                  {this.state.timerList.length > 0 ? (
+                    this.state.timerList.map((item, index) => (
+                      <Draggable
+                        key={item.id}
+                        draggableId={item.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <TimerControl
+                              item={item}
+                              setLength={this.setLength}
+                              setTimeLeft={this.setTimeLeft}
+                              breakLength={this.state.breakLength}
+                              timeLeft={this.state.timeLeft}
+                              timerType={this.state.timerType}
+                              setTimerItem={this.setTimerItem}
+                            ></TimerControl>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))
+                  ) : (
+                    <div>Let's start adding timer</div>
+                  )}
                   {provided.placeholder}
                 </SettingWrapper>
               )}
