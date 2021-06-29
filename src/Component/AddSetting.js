@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import {
+  SettingWrapper,
+  ButtonContainer,
+  StyledButton,
+  StyledRow,
+} from "./TimerSetting.elements.js";
 
-const AddSetting = () => {
+const AddSetting = (props) => {
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
 
@@ -8,33 +14,20 @@ const AddSetting = () => {
     setTodo(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleAdd = (e) => {
     e.preventDefault();
-    if (todo === "") {
+    if (e === "") {
       return;
     }
-    let todoObject = {
-      id: todos.length + 1,
-      task: todo,
-      completed: false,
-    };
+    
   };
 
   return (
-    <div className="container">
-      <div className="body">
-        <h3>Create a todo</h3>
-        <div className="todo-form">
-          <form>
-            <label>
-              Add todo
-              <input type="text" name="todo" />
-            </label>
-            <button type="submit">Submit</button>
-          </form>
-        </div>
-      </div>
-    </div>
+    <ButtonContainer onClick={props.setAddStatus}>
+      <i className="fas fa-plus fa-sm"></i>
+      <div>Add a setting</div>
+    </ButtonContainer>
+
   );
 };
 

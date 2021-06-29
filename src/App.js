@@ -10,6 +10,7 @@ import {
   StyledCol,
   Paragraph,
   SettingWrapper,
+  DisplayWrapper,
 } from "./Component/TimerSetting.elements";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import uniqueId from "lodash/uniqueId";
@@ -46,6 +47,7 @@ export default class App extends Component {
         },
       ],
       dragID: 0,
+      addStatus: 0
     };
 
     this.setBreak = this.setBreak.bind(this);
@@ -55,10 +57,29 @@ export default class App extends Component {
     this.setTimerType = this.setTimerType.bind(this);
     this.setTimerID = this.setTimerID.bind(this);
     this.setLength = this.setLength.bind(this);
+    this.setTimerList = this.setTimerList.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
     this.setTimerItem = this.setTimerItem.bind(this);
+    this.setAddStatus = this.setAddStatus.bind(this);
+    this.createEmpty = this.createEmpty.bind(this)
+    
+  }
+
+  createEmpty() {
+    return {
+      id: uniqueId(),
+      name: "",
+      order: 0,
+      length: 5 * 60,
+    }
+  }
+  setAddStatus() {
+    console.log(this.state.addStatus)
+    this.setState(state=> ({
+      addStatus: !state.addStatus
+    }))
   }
 
   handleDrag(e) {
@@ -95,9 +116,21 @@ export default class App extends Component {
       }
       return item;
     });
+    const newTimerType = () => {
+      if (this.state.timerType === dragBoxOrder || this.state.timerType === dropBoxOrder) {
+        return (this.state.timerType === dragBoxOrder) ? dropBoxOrder : dragBoxOrder;
+      } else {
+        return null
+      }
+    }
 
+    (newTimerType === null) ? 
     this.setState({
       timerList: newBoxState,
+    }) : 
+    this.setState({
+      timerList: newBoxState,
+      timerType: newTimerType
     });
   }
 
@@ -128,6 +161,12 @@ export default class App extends Component {
   setBreak(e) {
     this.setState({
       breakLength: e,
+    });
+  }
+
+  setTimerList(e) {
+    this.setState({
+      timerList: e
     });
   }
 
@@ -171,8 +210,14 @@ export default class App extends Component {
     const items = Array.from(this.state.timerList);
     const [reorderedItem] = items.splice(source.index, 1);
     items.splice(destination.index, 0, reorderedItem);
+    // update time left
+    const timeLeft = items.find(
+      (item) => item.order === this.state.timerType
+    );
+
     this.setState({
       timerList: items,
+      timeLeft: timeLeft.length
     });
   }
 
@@ -191,11 +236,25 @@ export default class App extends Component {
           </Paragraph>
         </StyledRow>
         <StyledRow>
-          <AddSetting />
+          <AddSetting setAddStatus={this.setAddStatus}></AddSetting>
         </StyledRow>
+        {this.state.addStatus ? (
+        <StyledRow>
+          <SettingWrapper>
+            <TimerControl
+              item={this.createEmpty()}
+              setLength={this.setLength}
+              setTimeLeft={this.setTimeLeft}
+              
+              timeLeft={this.state.timeLeft}
+              timerType={this.state.timerType}
+              setTimerItem={this.setTimerItem}
+            ></TimerControl>
+          </SettingWrapper>
+        </StyledRow>) : null}
         <StyledRow>
           <DragDropContext onDragEnd={this.onDragEnd}>
-            <Droppable droppableId="timerSettings" direction="horizontal">
+            <Droppable droppableId="timerSettings" direction="vertical">
               {(provided) => (
                 <SettingWrapper
                   {...provided.droppableProps}
@@ -236,20 +295,21 @@ export default class App extends Component {
             </Droppable>
           </DragDropContext>
         </StyledRow>
-        <StyledRow>
+        <DisplayWrapper>
           <DisplayTimer
             setTimeLeft={this.setTimeLeft}
             setLength={this.setLength}
             setTimerStatus={this.setTimerStatus}
             setTimerType={this.setTimerType}
             setTimerID={this.setTimerID}
+            setTimerList={this.setTimerList}
             timerList={this.state.timerList}
             timerStatus={this.state.timerStatus}
             timeLeft={this.state.timeLeft}
             timerType={this.state.timerType}
             timerID={this.state.timerID}
           ></DisplayTimer>
-        </StyledRow>
+        </DisplayWrapper>
       </Layout>
     );
   }

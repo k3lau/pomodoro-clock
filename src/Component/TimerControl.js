@@ -3,7 +3,10 @@ import {
   SettingContainer,
   StyledButton,
   StyledRow,
+  StyledCol,
+  StyledCol1,
   TimeFormat,
+  GridContainer
 } from "./TimerSetting.elements.js";
 import { displayTimeMMSS } from "../Util/TimeFormat";
 import { Fragment } from "react";
@@ -62,27 +65,26 @@ export class TimerControl extends Component {
 
   render() {
     return (
-      <Fragment>
+      <SettingContainer>
         {!this.state.edit ? (
-          <SettingContainer>
-            <StyledRow>
-              <div id={this.state.name}>{this.state.name}</div>
-              <StyledRow>
-                <StyledButton variant="small" onClick={this.decre}>
-                  <i className="fas fa-angle-down fa-sm"></i>
-                </StyledButton>
-                <TimeFormat>
-                  {`${displayTimeMMSS(this.props.item.length)}`}{" "}
-                </TimeFormat>
-                <StyledButton variant="small" onClick={this.incre}>
-                  <i className="fas fa-angle-up fa-sm"></i>
-                </StyledButton>
-              </StyledRow>
-              <button onClick={this.setEdit}>Edit</button>
-            </StyledRow>
-          </SettingContainer>
+            <GridContainer>
+              <div color="blue" grow="1" id={this.state.name}>{this.state.name}</div>
+              <StyledButton variant="small" onClick={this.decre}>
+                <i className="fas fa-angle-down fa-sm"></i>
+              </StyledButton>
+              <TimeFormat>
+                {`${displayTimeMMSS(this.props.item.length)}`}{" "}
+              </TimeFormat>
+              <StyledButton variant="small" onClick={this.incre}>
+                <i className="fas fa-angle-up fa-sm"></i>
+              </StyledButton>
+
+              <StyledButton variant="setting" onClick={this.setEdit}>
+                <i className="fas fa-edit fa-sx"></i>
+              </StyledButton>
+            </GridContainer>
         ) : (
-          <SettingContainer>
+          <div>
             <input
               type="text"
               value={this.state.name}
@@ -93,9 +95,9 @@ export class TimerControl extends Component {
             <button type="submit" onClick={this.saveItem}>
               Save
             </button>
-          </SettingContainer>
+          </div>
         )}
-      </Fragment>
+      </SettingContainer>
     );
   }
 }
