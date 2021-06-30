@@ -4,7 +4,7 @@ import {
   StyledButton,
   StyledRow,
   StyledCol,
-  StyledCol1,
+  StyledFormControl,
   TimeFormat,
   GridContainer
 } from "./TimerSetting.elements.js";
@@ -15,32 +15,40 @@ export class TimerControl extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      edit: false,
-      name: this.props.item.name,
+      name: "",
+      time: 0,
     };
     this.decre = this.decre.bind(this);
     this.incre = this.incre.bind(this);
-    this.setEdit = this.setEdit.bind(this);
     this.saveItem = this.saveItem.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleTimeChange = this.handleTimeChange.bind(this);
   }
 
   handleNameChange(e) {
     this.setState({ name: e.target.value });
   }
 
+  handleTimeChange(e) {
+    this.setState({ time: e.target.value });
+  }
+
+  handleEdit(e) {
+    this.props.setEdit(this.props.item)
+    this.setState({
+      name: this.props.item.name,
+      time: this.props.item.length
+    })
+  }
+
   saveItem() {
     let newItem = { ...this.props.item };
     newItem.name = this.state.name;
+    newItem.length = this.state.time;
+    newItem.edit = false;
     this.props.setTimerItem(newItem);
-    this.setEdit();
     return newItem;
-  }
-
-  setEdit() {
-    this.setState((state) => ({
-      edit: !state.edit,
-    }));
   }
 
   decre() {
@@ -66,36 +74,53 @@ export class TimerControl extends Component {
   render() {
     return (
       <SettingContainer>
-        {!this.state.edit ? (
-            <GridContainer>
-              <div color="blue" grow="1" id={this.state.name}>{this.state.name}</div>
-              <StyledButton variant="small" onClick={this.decre}>
-                <i className="fas fa-angle-down fa-sm"></i>
-              </StyledButton>
-              <TimeFormat>
-                {`${displayTimeMMSS(this.props.item.length)}`}{" "}
-              </TimeFormat>
-              <StyledButton variant="small" onClick={this.incre}>
-                <i className="fas fa-angle-up fa-sm"></i>
-              </StyledButton>
+        {!this.props.item.edit ? (
+          <GridContainer>
+            <div color="blue" grow="1" id={this.props.item.name}>{this.props.item.name}</div>
+            <StyledButton variant="small" onClick={this.decre}>
+              <i className="fas fa-angle-down fa-sm"></i>
+            </StyledButton>
+            <TimeFormat>
+              {`${displayTimeMMSS(this.props.item.length)}`}{" "}
+            </TimeFormat>
+            <StyledButton variant="small" onClick={this.incre}>
+              <i className="fas fa-angle-up fa-sm"></i>
+            </StyledButton>
 
-              <StyledButton variant="setting" onClick={this.setEdit}>
-                <i className="fas fa-edit fa-sx"></i>
-              </StyledButton>
-            </GridContainer>
+            <StyledButton variant="setting" onClick={this.handleEdit}>
+              <i className="fas fa-edit fa-sx"></i>
+            </StyledButton>
+          </GridContainer>
         ) : (
-          <div>
-            <input
+          <GridContainer layout="edit">
+            <StyledFormControl
               type="text"
               value={this.state.name}
               onChange={this.handleNameChange}
-              name="todo"
             />
-            <button onClick={this.setEdit}>Cancel</button>
-            <button type="submit" onClick={this.saveItem}>
-              Save
-            </button>
-          </div>
+            <StyledButton variant="small" onClick={this.decre}>
+              <i className="fas fa-angle-down fa-sm"></i>
+            </StyledButton>
+            <StyledFormControl
+              type="text"
+              value={this.state.time}
+              onChange={this.handleTimeChange}
+            />
+              <StyledButton variant="small" onClick={this.incre}>
+                <i className="fas fa-angle-up fa-sm"></i>
+              </StyledButton>
+              <StyledRow>
+              <StyledButton variant="setting" onClick={this.saveItem}>
+                <i className="far fa-save fa-sx"></i>
+              </StyledButton>
+              <StyledButton variant="setting" onClick={this.saveItem}>
+                <i className="fas fa-trash fa-sx"></i>
+              </StyledButton>
+              <StyledButton variant="setting" onClick={this.handleEdit}>
+                <i className="fas fa-times fa-sx"></i>
+              </StyledButton>
+              </StyledRow>
+          </GridContainer>
         )}
       </SettingContainer>
     );

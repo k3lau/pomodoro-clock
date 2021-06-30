@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
+import FormControl from "react-bootstrap/FormControl";
 
 export const TimerSetting = styled.div`
   width: 200px;
@@ -12,13 +13,14 @@ export const TimerSetting = styled.div`
 `;
 
 export const StyledButton = styled(Button)`
-  width: ${(props) => (props.variant === "primary" && "2em") || (props.variant === "setting" && "auto") || "1.2em"};
-  height: ${(props) => (props.variant === "primary" && "2em") || (props.variant === "setting" && "auto") || "1.2em"};
+  box-sizing: border-box;
+  width: ${(props) => (props.variant === "primary" && "2.5em") || (props.variant === "setting" && "1.75em") || "1.2em"};
+  height: ${(props) => (props.variant === "primary" && "2.5em") || (props.variant === "setting" && "1.2em") || "1.2em"};
   border-radius: ${(props) => (props.variant === "setting" && "0.1rem") || "50%"};
-  margin: 0em 0.5em;
-  padding: 0.5em;
+  margin: ${(props) => (props.variant === "primary" && "0.2em 0.2em") || "0px 0px"};
+  padding: 8px 0.5rem;
   font-size: 1em;
-  display: ${(props) => (props.variant === "setting" && "flex") || "flex"};
+  display: flex;
   align-items: center;
   justify-content: center;
 
@@ -32,7 +34,7 @@ export const StyledButton = styled(Button)`
   &:focus,
   &:active:focus {
     outline: thin dotted;
-    outline: 5px auto -webkit-focus-ring-color;
+    outline: 1px auto -webkit-focus-ring-color;
     outline-offset: -2px;
   }
   &:hover,
@@ -50,7 +52,13 @@ export const StyledButton = styled(Button)`
   &:hover,
   &:active {
     background-color: #dfdfdf;
-    border: 2px solid #ababab;
+    border: 1px solid #ababab;
+    padding: ${(props) =>
+      (props.variant === "primary" && "4px 4px")
+      || (props.variant === "setting" && "0px 0.5rem")
+      || ("5px 5px")};
+    margin: ${(props) =>
+      (props.variant !== "primary" &&  "0px 0px")};
   }
 `;
 
@@ -66,7 +74,7 @@ export const DisplayContainer = styled.div`
 `;
 
 export const SettingContainer = styled.div`
-  height: 100%;
+
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
@@ -84,7 +92,7 @@ export const ButtonContainer = styled(Button)`
   border-radius: 0.5rem;
   box-shadow: 0.1rem 0.1rem 0.5rem rgba(0, 0, 0, 0.6);
   margin: 0em 0.5em;
-  padding: 0.5em 1em;
+  padding: 4px 4px;
   font-size: 1em;
   display: flex;
   flex-flow: row nowrap;
@@ -121,6 +129,7 @@ export const ButtonContainer = styled(Button)`
   &:active {
     background-color: #dfdfdf;
     border: 2px solid #ababab;
+    padding: 2px 4px;
   }
 `;
 
@@ -134,13 +143,13 @@ export const StyledRow = styled.div`
 export const Layout = styled.div`
   width: 100%;
   max-width: 100vh;
+
   height: auto;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  min-width: 300px;
-  max-width: 1024px;
+  min-width: 480px;
   margin: auto;
   border-radius: 10px;
   padding: 10px;
@@ -161,8 +170,9 @@ export const SettingWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-
+  width: 100%;
   padding: 10px 10px;
+
 `;
 
 export const DisplayWrapper = styled.div`
@@ -171,10 +181,20 @@ export const DisplayWrapper = styled.div`
 
 export const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: 2fr 0.75fr 1fr 0.75fr 1fr;
+  grid-template-columns: 2fr 0.4fr 0.5fr 0.4fr 1fr;
+  width: 100%;
+  align-items: stretch;
   justify-content: center;
   > * {
     justify-self: center;
     align-self: center;
   }
+`;
+
+export const StyledFormControl = styled(FormControl)`
+  height: 1.6em;
+  padding: 0px;
+  margin: 0px;
+  text-align: center;
+  font: inherit;
 `;

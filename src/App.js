@@ -32,18 +32,21 @@ export default class App extends Component {
           name: "Session",
           order: 1,
           length: 25 * 60,
+          edit: false
         },
         {
           id: uniqueId(),
           name: "Break",
           order: 2,
           length: 5 * 60,
+          edit: false
         },
         {
           id: uniqueId(),
           name: "Long Break",
           order: 3,
           length: 5 * 60,
+          edit: false
         },
       ],
       dragID: 0,
@@ -63,23 +66,31 @@ export default class App extends Component {
     this.onDragEnd = this.onDragEnd.bind(this);
     this.setTimerItem = this.setTimerItem.bind(this);
     this.setAddStatus = this.setAddStatus.bind(this);
-    this.createEmpty = this.createEmpty.bind(this)
-    
+    this.setEdit = this.setEdit.bind(this);
   }
 
-  createEmpty() {
-    return {
-      id: uniqueId(),
-      name: "",
-      order: 0,
-      length: 5 * 60,
-    }
-  }
   setAddStatus() {
-    console.log(this.state.addStatus)
-    this.setState(state=> ({
-      addStatus: !state.addStatus
+    const defaultNewSetting = {
+        id: uniqueId(),
+        name: "",
+        order: this.state.timerList.length + 1,
+        length: 5 * 60,
+        edit: true
+    }
+    this.setState(state => ({
+      timerList: [...state.timerList, defaultNewSetting]
     }))
+  }
+
+  setEdit(item) {
+    let timers = [...this.state.timerList];
+    let index = timers.findIndex((x) => x.id === item.id);
+    let newTimer = { ...timers[index] };
+    newTimer.edit = !item.edit;
+    timers[index] = newTimer;
+    this.setState({
+      timerList: timers,
+    });
   }
 
   handleDrag(e) {
@@ -225,7 +236,7 @@ export default class App extends Component {
     return (
       <Layout>
         <StyledRow>
-          <h1>Podomoro</h1>
+          <h1>Pomodoro</h1>
         </StyledRow>
         <StyledRow>
           <Paragraph>- Kiet Lau -</Paragraph>
@@ -281,6 +292,7 @@ export default class App extends Component {
                               timeLeft={this.state.timeLeft}
                               timerType={this.state.timerType}
                               setTimerItem={this.setTimerItem}
+                              setEdit={this.setEdit}
                             ></TimerControl>
                           </div>
                         )}
