@@ -14,10 +14,18 @@ export const TimerSetting = styled.div`
 
 export const StyledButton = styled(Button)`
   box-sizing: border-box;
-  width: ${(props) => (props.variant === "primary" && "2.5em") || (props.variant === "setting" && "1.75em") || "1.2em"};
-  height: ${(props) => (props.variant === "primary" && "2.5em") || (props.variant === "setting" && "1.2em") || "1.2em"};
-  border-radius: ${(props) => (props.variant === "setting" && "0.1rem") || "50%"};
-  margin: ${(props) => (props.variant === "primary" && "0.2em 0.2em") || "0px 0px"};
+  width: ${(props) =>
+    (props.variant === "primary" && "2.5em") ||
+    (props.variant === "setting" && "1.75em") ||
+    "1.2em"};
+  height: ${(props) =>
+    (props.variant === "primary" && "2.5em") ||
+    (props.variant === "setting" && "1.2em") ||
+    "1.2em"};
+  border-radius: ${(props) =>
+    (props.variant === "setting" && "0.1rem") || "50%"};
+  margin: ${(props) =>
+    (props.variant === "primary" && "0.2em 0.2em") || "0px 0px"};
   padding: 8px 0.5rem;
   font-size: 1em;
   display: flex;
@@ -27,9 +35,9 @@ export const StyledButton = styled(Button)`
   background-color: transparent;
   color: #404040;
   border: ${(props) =>
-    (props.variant === "primary" && "2px solid")
-    || (props.variant === "setting" && "0px")
-    || ("1px solid #404040")};
+    (props.variant === "primary" && "2px solid") ||
+    (props.variant === "setting" && "0px") ||
+    "1px solid #404040"};
 
   &:focus,
   &:active:focus {
@@ -54,11 +62,10 @@ export const StyledButton = styled(Button)`
     background-color: #dfdfdf;
     border: 1px solid #ababab;
     padding: ${(props) =>
-      (props.variant === "primary" && "4px 4px")
-      || (props.variant === "setting" && "0px 0.5rem")
-      || ("5px 5px")};
-    margin: ${(props) =>
-      (props.variant !== "primary" &&  "0px 0px")};
+      (props.variant === "primary" && "4px 4px") ||
+      (props.variant === "setting" && "0px 0.5rem") ||
+      "5px 5px"};
+    margin: ${(props) => props.variant !== "primary" && "0px 0px"};
   }
 `;
 
@@ -74,16 +81,15 @@ export const DisplayContainer = styled.div`
 `;
 
 export const SettingContainer = styled.div`
-
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   padding: 0.5em 1em 0.5em 1em;
   margin: 0.5em 1em 0.5em 1em;
-  background-color: transparent;
   border-radius: 0.5em;
   box-shadow: 0.1rem 0.1rem 0.5rem rgba(0, 0, 0, 0.6);
+  background-color: ${(props) => props.bgColor || "transparent"};
 `;
 
 export const ButtonContainer = styled(Button)`
@@ -143,8 +149,7 @@ export const StyledRow = styled.div`
 export const Layout = styled.div`
   width: 100%;
   max-width: 100vh;
-
-  height: auto;
+  height: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -171,8 +176,8 @@ export const SettingWrapper = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   width: 100%;
+  max-width: 600px;
   padding: 10px 10px;
-
 `;
 
 export const DisplayWrapper = styled.div`

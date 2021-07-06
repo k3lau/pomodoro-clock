@@ -32,25 +32,46 @@ export default class App extends Component {
           name: "Session",
           order: 1,
           length: 25 * 60,
-          edit: false
+          edit: false,
         },
         {
           id: uniqueId(),
           name: "Break",
           order: 2,
           length: 5 * 60,
-          edit: false
+          edit: false,
+        },
+        {
+          id: uniqueId(),
+          name: "Session",
+          order: 3,
+          length: 25 * 60,
+          edit: false,
+        },
+        {
+          id: uniqueId(),
+          name: "Break",
+          order: 4,
+          length: 5 * 60,
+          edit: false,
+        },
+        {
+          id: uniqueId(),
+          name: "Session",
+          order: 5,
+          length: 25 * 60,
+          edit: false,
         },
         {
           id: uniqueId(),
           name: "Long Break",
-          order: 3,
+          order: 6,
           length: 5 * 60,
-          edit: false
+          edit: false,
         },
       ],
       dragID: 0,
-      addStatus: 0
+      addStatus: 0,
     };
 
     this.setBreak = this.setBreak.bind(this);
@@ -71,15 +92,15 @@ export default class App extends Component {
 
   setAddStatus() {
     const defaultNewSetting = {
-        id: uniqueId(),
-        name: "",
-        order: this.state.timerList.length + 1,
-        length: 5 * 60,
-        edit: true
-    }
-    this.setState(state => ({
-      timerList: [...state.timerList, defaultNewSetting]
-    }))
+      id: uniqueId(),
+      name: "",
+      order: this.state.timerList.length + 1,
+      length: 5 * 60,
+      edit: true,
+    };
+    this.setState((state) => ({
+      timerList: [...state.timerList, defaultNewSetting],
+    }));
   }
 
   setEdit(item) {
@@ -128,21 +149,26 @@ export default class App extends Component {
       return item;
     });
     const newTimerType = () => {
-      if (this.state.timerType === dragBoxOrder || this.state.timerType === dropBoxOrder) {
-        return (this.state.timerType === dragBoxOrder) ? dropBoxOrder : dragBoxOrder;
+      if (
+        this.state.timerType === dragBoxOrder ||
+        this.state.timerType === dropBoxOrder
+      ) {
+        return this.state.timerType === dragBoxOrder
+          ? dropBoxOrder
+          : dragBoxOrder;
       } else {
-        return null
+        return null;
       }
-    }
+    };
 
-    (newTimerType === null) ? 
-    this.setState({
-      timerList: newBoxState,
-    }) : 
-    this.setState({
-      timerList: newBoxState,
-      timerType: newTimerType
-    });
+    newTimerType === null
+      ? this.setState({
+          timerList: newBoxState,
+        })
+      : this.setState({
+          timerList: newBoxState,
+          timerType: newTimerType,
+        });
   }
 
   setTimerItem(modifiedItem) {
@@ -177,7 +203,7 @@ export default class App extends Component {
 
   setTimerList(e) {
     this.setState({
-      timerList: e
+      timerList: e,
     });
   }
 
@@ -222,13 +248,11 @@ export default class App extends Component {
     const [reorderedItem] = items.splice(source.index, 1);
     items.splice(destination.index, 0, reorderedItem);
     // update time left
-    const timeLeft = items.find(
-      (item) => item.order === this.state.timerType
-    );
+    const timeLeft = items.find((item) => item.order === this.state.timerType);
 
     this.setState({
       timerList: items,
-      timeLeft: timeLeft.length
+      timeLeft: timeLeft.length,
     });
   }
 
@@ -250,19 +274,19 @@ export default class App extends Component {
           <AddSetting setAddStatus={this.setAddStatus}></AddSetting>
         </StyledRow>
         {this.state.addStatus ? (
-        <StyledRow>
-          <SettingWrapper>
-            <TimerControl
-              item={this.createEmpty()}
-              setLength={this.setLength}
-              setTimeLeft={this.setTimeLeft}
-              
-              timeLeft={this.state.timeLeft}
-              timerType={this.state.timerType}
-              setTimerItem={this.setTimerItem}
-            ></TimerControl>
-          </SettingWrapper>
-        </StyledRow>) : null}
+          <StyledRow>
+            <SettingWrapper>
+              <TimerControl
+                item={this.createEmpty()}
+                setLength={this.setLength}
+                setTimeLeft={this.setTimeLeft}
+                timeLeft={this.state.timeLeft}
+                timerType={this.state.timerType}
+                setTimerItem={this.setTimerItem}
+              ></TimerControl>
+            </SettingWrapper>
+          </StyledRow>
+        ) : null}
         <StyledRow>
           <DragDropContext onDragEnd={this.onDragEnd}>
             <Droppable droppableId="timerSettings" direction="vertical">

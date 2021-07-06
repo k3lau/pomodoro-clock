@@ -6,7 +6,7 @@ import {
   StyledCol,
   StyledFormControl,
   TimeFormat,
-  GridContainer
+  GridContainer,
 } from "./TimerSetting.elements.js";
 import { displayTimeMMSS } from "../Util/TimeFormat";
 import { Fragment } from "react";
@@ -24,6 +24,13 @@ export class TimerControl extends Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
+    this.isCurrent = this.isCurrent.bind(this);
+  }
+
+  isCurrent() {
+    if (this.props.item.order === this.props.timerType) {
+      return true;
+    }
   }
 
   handleNameChange(e) {
@@ -35,11 +42,11 @@ export class TimerControl extends Component {
   }
 
   handleEdit(e) {
-    this.props.setEdit(this.props.item)
+    this.props.setEdit(this.props.item);
     this.setState({
       name: this.props.item.name,
-      time: this.props.item.length
-    })
+      time: this.props.item.length,
+    });
   }
 
   saveItem() {
@@ -55,7 +62,7 @@ export class TimerControl extends Component {
     var time = this.props.item.length - 60;
     if (time >= 10) {
       this.props.setLength(this.props.item.id, time);
-      if (this.props.timerType === this.props.item.order) {
+      if (this.isCurrent()) {
         this.props.setTimeLeft(this.props.timeLeft - 60);
       }
     }
@@ -65,7 +72,7 @@ export class TimerControl extends Component {
     var time = this.props.item.length + 60;
     if (time <= 3600) {
       this.props.setLength(this.props.item.id, time);
-      if (this.props.timerType === this.props.item.order) {
+      if (this.isCurrent()) {
         this.props.setTimeLeft(this.props.timeLeft + 60);
       }
     }
@@ -73,10 +80,12 @@ export class TimerControl extends Component {
 
   render() {
     return (
-      <SettingContainer>
+      <SettingContainer
+        bgColor={() => (this.isCurrent() ? "#DF7373" : "transparent")}
+      >
         {!this.props.item.edit ? (
           <GridContainer>
-            <div color="blue" grow="1" id={this.props.item.name}>{this.props.item.name}</div>
+            <div>{this.props.item.name}</div>
             <StyledButton variant="small" onClick={this.decre}>
               <i className="fas fa-angle-down fa-sm"></i>
             </StyledButton>
@@ -106,10 +115,10 @@ export class TimerControl extends Component {
               value={this.state.time}
               onChange={this.handleTimeChange}
             />
-              <StyledButton variant="small" onClick={this.incre}>
-                <i className="fas fa-angle-up fa-sm"></i>
-              </StyledButton>
-              <StyledRow>
+            <StyledButton variant="small" onClick={this.incre}>
+              <i className="fas fa-angle-up fa-sm"></i>
+            </StyledButton>
+            <StyledRow>
               <StyledButton variant="setting" onClick={this.saveItem}>
                 <i className="far fa-save fa-sx"></i>
               </StyledButton>
@@ -119,7 +128,7 @@ export class TimerControl extends Component {
               <StyledButton variant="setting" onClick={this.handleEdit}>
                 <i className="fas fa-times fa-sx"></i>
               </StyledButton>
-              </StyledRow>
+            </StyledRow>
           </GridContainer>
         )}
       </SettingContainer>
