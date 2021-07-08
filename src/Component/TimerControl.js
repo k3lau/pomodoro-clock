@@ -7,16 +7,18 @@ import {
   StyledFormControl,
   TimeFormat,
   GridContainer,
+  StyledInputMask
 } from "./TimerSetting.elements.js";
-import { displayTimeMMSS } from "../Util/TimeFormat";
+import { displayTimeMMSS, getSecondsFromHHMMSS, secondsToHHMMSS } from "../Util/TimeFormat";
 import { Fragment } from "react";
+import InputMask from 'react-input-mask';
 
 export class TimerControl extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: "",
-      time: 0,
+      time: "00:00",
     };
     this.decre = this.decre.bind(this);
     this.incre = this.incre.bind(this);
@@ -45,16 +47,24 @@ export class TimerControl extends Component {
     this.props.setEdit(this.props.item);
     this.setState({
       name: this.props.item.name,
-      time: this.props.item.length,
+      time: secondsToHHMMSS(this.props.item.length),
     });
   }
 
   saveItem() {
     let newItem = { ...this.props.item };
     newItem.name = this.state.name;
-    newItem.length = this.state.time;
+    newItem.length = getSecondsFromHHMMSS(this.state.time);
     newItem.edit = false;
     this.props.setTimerItem(newItem);
+    this.props.setTimerType(1);
+    console.log(this.props.timerList[0].length)
+    if (this.props.item.id === this.props.timerList[0].id) {
+      this.props.setTimeLeft(newItem.length);
+    } else {
+    this.props.setTimeLeft(this.props.timerList[0].length);
+    }
+    this.props.setTimerStatus(0);
     return newItem;
   }
 
@@ -110,10 +120,11 @@ export class TimerControl extends Component {
             <StyledButton variant="small" onClick={this.decre}>
               <i className="fas fa-angle-down fa-sm"></i>
             </StyledButton>
-            <StyledFormControl
+            <StyledInputMask
               type="text"
               value={this.state.time}
               onChange={this.handleTimeChange}
+              mask="99:99"
             />
             <StyledButton variant="small" onClick={this.incre}>
               <i className="fas fa-angle-up fa-sm"></i>

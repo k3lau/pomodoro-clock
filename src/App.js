@@ -11,6 +11,8 @@ import {
   Paragraph,
   SettingWrapper,
   DisplayWrapper,
+  StyledDragDropContext,
+  StyledDroppable
 } from "./Component/TimerSetting.elements";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import uniqueId from "lodash/uniqueId";
@@ -273,20 +275,7 @@ export default class App extends Component {
         <StyledRow>
           <AddSetting setAddStatus={this.setAddStatus}></AddSetting>
         </StyledRow>
-        {this.state.addStatus ? (
-          <StyledRow>
-            <SettingWrapper>
-              <TimerControl
-                item={this.createEmpty()}
-                setLength={this.setLength}
-                setTimeLeft={this.setTimeLeft}
-                timeLeft={this.state.timeLeft}
-                timerType={this.state.timerType}
-                setTimerItem={this.setTimerItem}
-              ></TimerControl>
-            </SettingWrapper>
-          </StyledRow>
-        ) : null}
+
         <StyledRow>
           <DragDropContext onDragEnd={this.onDragEnd}>
             <Droppable droppableId="timerSettings" direction="vertical">
@@ -310,12 +299,18 @@ export default class App extends Component {
                           >
                             <TimerControl
                               item={item}
-                              setLength={this.setLength}
                               setTimeLeft={this.setTimeLeft}
-                              breakLength={this.state.breakLength}
+                              setLength={this.setLength}
+                              setTimerStatus={this.setTimerStatus}
+                              setTimerType={this.setTimerType}
+                              setTimerID={this.setTimerID}
+                              setTimerList={this.setTimerList}
+                              setTimerItem={this.setTimerItem}
+                              timerList={this.state.timerList}
+                              timerStatus={this.state.timerStatus}
                               timeLeft={this.state.timeLeft}
                               timerType={this.state.timerType}
-                              setTimerItem={this.setTimerItem}
+                              timerID={this.state.timerID}
                               setEdit={this.setEdit}
                             ></TimerControl>
                           </div>

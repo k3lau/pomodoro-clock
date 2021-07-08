@@ -1,6 +1,27 @@
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import FormControl from "react-bootstrap/FormControl";
+import InputMask from 'react-input-mask';
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+
+export const StyledDragDropContext = styled(DragDropContext)`
+
+`;
+
+export const StyledDroppable = styled(Droppable)`
+
+`;
+
+export const StyledInputMask = styled(InputMask)`
+  padding: 0px 4px;
+  text-align: center;
+  font: inherit;
+  font-size: inherit;
+  width: 5em;
+  height: auto;
+  border: 0px;
+  border-radius: 4px;
+`;
 
 export const TimerSetting = styled.div`
   width: 200px;
@@ -61,6 +82,8 @@ export const StyledButton = styled(Button)`
   &:active {
     background-color: #dfdfdf;
     border: 1px solid #ababab;
+    outline: 0;
+    outline-color: black;
     padding: ${(props) =>
       (props.variant === "primary" && "4px 4px") ||
       (props.variant === "setting" && "0px 0.5rem") ||
