@@ -47,7 +47,8 @@ export const StyledButton = styled(Button)`
     (props.variant === "setting" && "0.1rem") || "50%"};
   margin: ${(props) =>
     (props.variant === "primary" && "0.2em 0.2em") || "0px 0px"};
-  padding: 8px 0.5rem;
+  padding: ${(props) =>
+    (props.variant === "setting" && "0.75rem 0.5rem") || "8px 0.5rem"};
   font-size: 1em;
   display: flex;
   align-items: center;
@@ -86,7 +87,7 @@ export const StyledButton = styled(Button)`
     outline-color: black;
     padding: ${(props) =>
       (props.variant === "primary" && "4px 4px") ||
-      (props.variant === "setting" && "0px 0.5rem") ||
+      (props.variant === "setting" && "0.69rem 0.5rem") ||
       "5px 5px"};
     margin: ${(props) => props.variant !== "primary" && "0px 0px"};
   }

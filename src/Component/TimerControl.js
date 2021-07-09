@@ -27,6 +27,7 @@ export class TimerControl extends Component {
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
     this.isCurrent = this.isCurrent.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
   }
 
   isCurrent() {
@@ -45,27 +46,50 @@ export class TimerControl extends Component {
 
   handleEdit(e) {
     this.props.setEdit(this.props.item);
+    const strTime = secondsToHHMMSS(this.props.item.length);
     this.setState({
       name: this.props.item.name,
-      time: secondsToHHMMSS(this.props.item.length),
+      time: strTime,
     });
+  }
+
+  deleteItem() {
+    let items = [...this.props.timerList];
+    const index = items.findIndex((item) => item.id === this.props.item.id);
+    if (index !== -1) {
+      items.splice(index,1)
+      items = items.map((item, index) => {
+        const newItem = {...item};
+        newItem.order = index + 1
+        return newItem
+      });
+      this.props.setTimerList(items)
+    }
   }
 
   saveItem() {
     let newItem = { ...this.props.item };
-    newItem.name = this.state.name;
-    newItem.length = getSecondsFromHHMMSS(this.state.time);
-    newItem.edit = false;
-    this.props.setTimerItem(newItem);
+    const secs = getSecondsFromHHMMSS(this.state.time);
+
+    if (secs !== 0) {
+      newItem.name = this.state.name;
+      newItem.length = secs;
+      newItem.edit = false;
+      this.props.setTimerItem(newItem);
+    } else {
+      newItem.name = this.state.name;
+      newItem.edit = false;
+      this.props.setTimerItem(newItem);
+    }
+    
+    //Reset timer to 1
     this.props.setTimerType(1);
-    console.log(this.props.timerList[0].length)
     if (this.props.item.id === this.props.timerList[0].id) {
       this.props.setTimeLeft(newItem.length);
     } else {
     this.props.setTimeLeft(this.props.timerList[0].length);
     }
     this.props.setTimerStatus(0);
-    return newItem;
   }
 
   decre() {
@@ -133,7 +157,7 @@ export class TimerControl extends Component {
               <StyledButton variant="setting" onClick={this.saveItem}>
                 <i className="far fa-save fa-sx"></i>
               </StyledButton>
-              <StyledButton variant="setting" onClick={this.saveItem}>
+              <StyledButton variant="setting" onClick={this.deleteItem}>
                 <i className="fas fa-trash fa-sx"></i>
               </StyledButton>
               <StyledButton variant="setting" onClick={this.handleEdit}>

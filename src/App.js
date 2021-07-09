@@ -15,11 +15,28 @@ import {
   StyledDroppable
 } from "./Component/TimerSetting.elements";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import uniqueId from "lodash/uniqueId";
+import uniqueId from "lodash.uniqueid";
 
 export default class App extends Component {
   constructor(props) {
     super(props);
+
+    this.defaultTimerList = [
+      {
+        id: uniqueId(),
+        name: "Session",
+        order: 1,
+        length: 25 * 60,
+        edit: false,
+      },
+      {
+        id: uniqueId(),
+        name: "Break",
+        order: 2,
+        length: 5 * 60,
+        edit: false,
+      },
+    ]
 
     this.state = {
       timeLeft: 1500,
@@ -28,50 +45,7 @@ export default class App extends Component {
       timerStatus: 0,
       timerType: 1,
       timerID: 0,
-      timerList: [
-        {
-          id: uniqueId(),
-          name: "Session",
-          order: 1,
-          length: 25 * 60,
-          edit: false,
-        },
-        {
-          id: uniqueId(),
-          name: "Break",
-          order: 2,
-          length: 5 * 60,
-          edit: false,
-        },
-        {
-          id: uniqueId(),
-          name: "Session",
-          order: 3,
-          length: 25 * 60,
-          edit: false,
-        },
-        {
-          id: uniqueId(),
-          name: "Break",
-          order: 4,
-          length: 5 * 60,
-          edit: false,
-        },
-        {
-          id: uniqueId(),
-          name: "Session",
-          order: 5,
-          length: 25 * 60,
-          edit: false,
-        },
-        {
-          id: uniqueId(),
-          name: "Long Break",
-          order: 6,
-          length: 5 * 60,
-          edit: false,
-        },
-      ],
+      timerList: this.defaultTimerList,
       dragID: 0,
       addStatus: 0,
     };
@@ -92,17 +66,29 @@ export default class App extends Component {
     this.setEdit = this.setEdit.bind(this);
   }
 
+  componentDidMount() {
+    let timerList = JSON.parse(localStorage.getItem('timerList'))
+    if (timerList === null) {
+      timerList = this.defaultTimerList
+    } else {
+
+    }
+    this.setState({ timerList : timerList});
+  }
+
   setAddStatus() {
     const defaultNewSetting = {
       id: uniqueId(),
-      name: "",
+      name: "Session",
       order: this.state.timerList.length + 1,
       length: 5 * 60,
       edit: true,
     };
+    const newList = [...this.state.timerList, defaultNewSetting]
     this.setState((state) => ({
-      timerList: [...state.timerList, defaultNewSetting],
+      timerList: newList,
     }));
+    localStorage.setItem('timerList', JSON.stringify(newList))
   }
 
   setEdit(item) {
@@ -114,6 +100,7 @@ export default class App extends Component {
     this.setState({
       timerList: timers,
     });
+    localStorage.setItem('timerList', JSON.stringify(timers))
   }
 
   handleDrag(e) {
@@ -171,6 +158,7 @@ export default class App extends Component {
           timerList: newBoxState,
           timerType: newTimerType,
         });
+        localStorage.setItem('timerList', JSON.stringify(newBoxState))
   }
 
   setTimerItem(modifiedItem) {
@@ -184,6 +172,7 @@ export default class App extends Component {
     this.setState({
       timerList: newBoxState,
     });
+    localStorage.setItem('timerList', JSON.stringify(newBoxState))
   }
 
   setLength(id, time) {
@@ -195,6 +184,7 @@ export default class App extends Component {
     this.setState({
       timerList: timers,
     });
+    localStorage.setItem('timerList', JSON.stringify(timers))
   }
 
   setBreak(e) {
@@ -207,6 +197,7 @@ export default class App extends Component {
     this.setState({
       timerList: e,
     });
+    localStorage.setItem('timerList', JSON.stringify(e))
   }
 
   setSession(e) {
