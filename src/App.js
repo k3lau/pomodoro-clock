@@ -35,15 +35,6 @@ export default class App extends Component {
       },
     ]
 
-    this.defaultNewSetting = {
-      id: uniqueId("id-"),
-      name: "Session",
-      order: 0,
-      length: 5 * 60,
-      edit: true,
-    };
-
-
     this.state = {
       timeLeft: 1500,
       breakLength: 300,
@@ -82,7 +73,14 @@ export default class App extends Component {
   }
 
   addTimer() {
-    const newList = [...this.state.timerList, this.defaultNewSetting]
+    let defaultNewSetting = {
+      id: uniqueId("id-"),
+      name: "Session",
+      order: this.state.timerList.length + 1,
+      length: 5 * 60,
+      edit: true,
+    };
+    const newList = [...this.state.timerList, defaultNewSetting]
     this.setState((state) => ({
       timerList: newList,
     }));
