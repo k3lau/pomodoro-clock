@@ -1,6 +1,5 @@
 html {
-  background: linear-gradient(to bottom right, #e9ebf0, #c9ccd4);
-  height: 100%;
+  background: linear-gradient(to bottom right, #e9ebf0, #c9ccd4) fixed;
 }
 
 body {
@@ -10,7 +9,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(to bottom right, #e9ebf0, #c9ccd4);
+  background: linear-gradient(to bottom right, #e9ebf0, #c9ccd4) fixed;
 }
 
 code {
