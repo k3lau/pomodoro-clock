@@ -223,11 +223,6 @@ export default class App extends Component {
         <StyledRow>
           <Paragraph>- Kiet Lau -</Paragraph>
         </StyledRow>
-        <StyledRow>
-          <Paragraph>
-            Podomoro timer built with ReactJS and styled-component
-          </Paragraph>
-        </StyledRow>
 
         <DisplayWrapper>
           <DisplayTimer
