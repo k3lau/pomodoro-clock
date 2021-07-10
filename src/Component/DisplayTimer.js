@@ -3,7 +3,6 @@ import {
   DisplayContainer,
   StyledButton,
   StyledRow,
-  TimerSetting,
   TimeFormat,
 } from "./TimerSetting.elements.js";
 import { displayTimeMMSS } from "../Util/TimeFormat.js";
@@ -49,6 +48,7 @@ const strokeDashoffset = (time, start, goal, duration) => {
   }
 
   const currentTime = time / duration;
+
   return start + goal * currentTime;
 };
 
@@ -64,14 +64,18 @@ export class DisplayTimer extends Component {
     this.duration = this.duration.bind(this);
 
     this.state = {
-      currentIndex: this.props.timerList.findIndex(
-        (item) => item.order === this.props.timerType
-      ),
+      currentIndex: 1
     };
   }
 
+  componentDidMount() {
+    this.setState({
+      currentIndex: this.props.timerType
+    })
+  }
+
   clockInterval = () => {
-    let timeScale = 1;
+    let timeScale = 60;
     let timerID = setTimeout(() => {
       var timeLeft = this.props.timeLeft;
       timeLeft = timeLeft - 1 / timeScale;
@@ -79,20 +83,18 @@ export class DisplayTimer extends Component {
       this.buzzer(timeLeft);
       if (timeLeft < 0) {
         clearTimeout(this.props.timerID);
-        if (this.state.currentIndex < this.props.timerList.length - 1) {
-          this.setState((state) => {
-            return { currentIndex: state.currentIndex + 1 };
-          });
+        let nextIndex = 0;
+        if (this.props.timerType < this.props.timerList.length) {
+          nextIndex = this.props.timerType + 1
         } else {
-          this.setState({
-            currentIndex: 0,
-          });
+          nextIndex = 1
         }
+        
         this.props.setTimerType(
-          this.props.timerList[this.state.currentIndex].order
+          nextIndex
         );
         this.props.setTimeLeft(
-          this.props.timerList[this.state.currentIndex].length
+          this.props.timerList[nextIndex-1].length
         );
       }
       this.props.setTimerID(this.clockInterval());
@@ -115,19 +117,16 @@ export class DisplayTimer extends Component {
   }
 
   reset() {
-    this.props.setLength("Break", 300);
-    this.props.setLength("Session", 1500);
     this.props.setTimerType(1);
     clearTimeout(this.props.timerID);
     let items = Array.from(this.props.timerList);
     items = items.map((item, index) => {
-      const newItem = {...item};
+      const newItem = { ...item };
       newItem.order = index + 1
       return newItem
     });
     this.props.setTimerList(items)
     this.props.setTimeLeft(items[0].length);
-
 
     this.audioBeep.pause();
     this.audioBeep.currentTime = 0;
@@ -140,17 +139,21 @@ export class DisplayTimer extends Component {
       if (item.order === this.props.timerType) {
         return item;
       }
+      return null;
     });
     return label.name;
   }
 
   duration() {
     const timers = [...this.props.timerList];
+
     const length = timers.find((item) => {
       if (item.order === this.props.timerType) {
         return item;
       }
+      return null;
     });
+
     return length.length * 1000;
   }
 

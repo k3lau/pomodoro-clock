@@ -30,6 +30,6 @@ export const secondsToHHMMSS = (secs) => {
   const seconds = secs % 60;
 
   return [minutes, seconds]
-    .map((val) => (val < 10 ? `0${val}` : val))
-    .filter((val, index) => val !== "00" || index > 0).join(":");
+    .map((val) => (val < 10 ? `0${val}` : val)).join(":")
+    //.filter((val, index) => val !== "00" || index > 0).join(":");
 };

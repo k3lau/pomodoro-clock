@@ -3,15 +3,12 @@ import {
   SettingContainer,
   StyledButton,
   StyledRow,
-  StyledCol,
   StyledFormControl,
   TimeFormat,
   GridContainer,
   StyledInputMask
 } from "./TimerSetting.elements.js";
 import { displayTimeMMSS, getSecondsFromHHMMSS, secondsToHHMMSS } from "../Util/TimeFormat";
-import { Fragment } from "react";
-import InputMask from 'react-input-mask';
 
 export class TimerControl extends Component {
   constructor(props) {
@@ -55,15 +52,17 @@ export class TimerControl extends Component {
 
   deleteItem() {
     let items = [...this.props.timerList];
-    const index = items.findIndex((item) => item.id === this.props.item.id);
-    if (index !== -1) {
-      items.splice(index,1)
-      items = items.map((item, index) => {
-        const newItem = {...item};
-        newItem.order = index + 1
-        return newItem
-      });
-      this.props.setTimerList(items)
+    if (items.length > 2) {
+      const index = items.findIndex((item) => item.id === this.props.item.id);
+      if (index !== -1) {
+        items.splice(index,1)
+        items = items.map((item, index) => {
+          const newItem = {...item};
+          newItem.order = index + 1
+          return newItem
+        });
+        this.props.setTimerList(items)
+      }
     }
   }
 
@@ -89,6 +88,7 @@ export class TimerControl extends Component {
     } else {
     this.props.setTimeLeft(this.props.timerList[0].length);
     }
+    clearTimeout(this.props.timerID);
     this.props.setTimerStatus(0);
   }
 

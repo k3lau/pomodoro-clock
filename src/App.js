@@ -7,12 +7,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Layout,
   StyledRow,
-  StyledCol,
   Paragraph,
   SettingWrapper,
   DisplayWrapper,
-  StyledDragDropContext,
-  StyledDroppable
 } from "./Component/TimerSetting.elements";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import uniqueId from "lodash.uniqueid";
@@ -23,20 +20,29 @@ export default class App extends Component {
 
     this.defaultTimerList = [
       {
-        id: uniqueId(),
+        id: uniqueId("id-"),
         name: "Session",
         order: 1,
         length: 25 * 60,
         edit: false,
       },
       {
-        id: uniqueId(),
+        id: uniqueId("id-"),
         name: "Break",
         order: 2,
         length: 5 * 60,
         edit: false,
       },
     ]
+
+    this.defaultNewSetting = {
+      id: uniqueId("id-"),
+      name: "Session",
+      order: 0,
+      length: 5 * 60,
+      edit: true,
+    };
+
 
     this.state = {
       timeLeft: 1500,
@@ -46,7 +52,6 @@ export default class App extends Component {
       timerType: 1,
       timerID: 0,
       timerList: this.defaultTimerList,
-      dragID: 0,
       addStatus: 0,
     };
 
@@ -58,37 +63,38 @@ export default class App extends Component {
     this.setTimerID = this.setTimerID.bind(this);
     this.setLength = this.setLength.bind(this);
     this.setTimerList = this.setTimerList.bind(this);
-    this.handleDrag = this.handleDrag.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
     this.setTimerItem = this.setTimerItem.bind(this);
-    this.setAddStatus = this.setAddStatus.bind(this);
+    this.addTimer = this.addTimer.bind(this);
     this.setEdit = this.setEdit.bind(this);
+    this.resetTimerSetting = this.resetTimerSetting.bind(this);
   }
+
 
   componentDidMount() {
     let timerList = JSON.parse(localStorage.getItem('timerList'))
     if (timerList === null) {
       timerList = this.defaultTimerList
-    } else {
-
     }
-    this.setState({ timerList : timerList});
+    this.setState({ 
+      timeLeft: timerList[0].length,
+      timerList: timerList})
   }
 
-  setAddStatus() {
-    const defaultNewSetting = {
-      id: uniqueId(),
-      name: "Session",
-      order: this.state.timerList.length + 1,
-      length: 5 * 60,
-      edit: true,
-    };
-    const newList = [...this.state.timerList, defaultNewSetting]
+  addTimer() {
+    const newList = [...this.state.timerList, this.defaultNewSetting]
     this.setState((state) => ({
       timerList: newList,
     }));
     localStorage.setItem('timerList', JSON.stringify(newList))
+  }
+  
+  resetTimerSetting() {
+    const timerList = this.defaultTimerList
+    this.setState({ 
+      timeLeft: timerList[0].length,
+      timerList: timerList})
+    localStorage.clear();
   }
 
   setEdit(item) {
@@ -101,64 +107,6 @@ export default class App extends Component {
       timerList: timers,
     });
     localStorage.setItem('timerList', JSON.stringify(timers))
-  }
-
-  handleDrag(e) {
-    this.setState({
-      dragID: e.currentTarget.id,
-    });
-  }
-
-  handleDrop(e) {
-    let timers = [...this.state.timerList];
-    if (
-      typeof this.state.dragID === "undefined" ||
-      typeof e.currentTarget.id === "undefined"
-    ) {
-      return null;
-    }
-
-    const dragBox = timers.find(
-      (item) => item.order.toString() === this.state.dragID
-    );
-    const dropBox = timers.find(
-      (item) => item.order.toString() === e.currentTarget.id
-    );
-    const dragBoxOrder = dragBox.order;
-    const dropBoxOrder = dropBox.order;
-
-    const newBoxState = timers.map((item) => {
-      if (item.order.toString() === this.state.dragID) {
-        item.order = dropBoxOrder;
-      } else {
-        if (item.order.toString() === e.currentTarget.id) {
-          item.order = dragBoxOrder;
-        }
-      }
-      return item;
-    });
-    const newTimerType = () => {
-      if (
-        this.state.timerType === dragBoxOrder ||
-        this.state.timerType === dropBoxOrder
-      ) {
-        return this.state.timerType === dragBoxOrder
-          ? dropBoxOrder
-          : dragBoxOrder;
-      } else {
-        return null;
-      }
-    };
-
-    newTimerType === null
-      ? this.setState({
-          timerList: newBoxState,
-        })
-      : this.setState({
-          timerList: newBoxState,
-          timerType: newTimerType,
-        });
-        localStorage.setItem('timerList', JSON.stringify(newBoxState))
   }
 
   setTimerItem(modifiedItem) {
@@ -237,16 +185,35 @@ export default class App extends Component {
       return;
     }
     // reordering the list
-    const items = Array.from(this.state.timerList);
+    let items = Array.from(this.state.timerList);
+
+    // update current time left
+    let order = 0;
+    if (destination.index + 1 === this.state.timerType) {
+      order = source.index + 1
+    }
+    if (source.index + 1 === this.state.timerType) {
+      order = destination.index + 1
+    }
+    
+    if (order !== 0) {
+      this.setState({
+        timerType: order,
+      })
+    }
+
     const [reorderedItem] = items.splice(source.index, 1);
     items.splice(destination.index, 0, reorderedItem);
-    // update time left
-    const timeLeft = items.find((item) => item.order === this.state.timerType);
+    items = items.map((item, index) => {
+      let newItem = {...item};
+      newItem.order = index + 1
+        return newItem
+    })
 
     this.setState({
       timerList: items,
-      timeLeft: timeLeft.length,
     });
+    localStorage.setItem('timerList', JSON.stringify(items))
   }
 
   render() {
@@ -263,10 +230,26 @@ export default class App extends Component {
             Podomoro timer built with ReactJS and styled-component
           </Paragraph>
         </StyledRow>
-        <StyledRow>
-          <AddSetting setAddStatus={this.setAddStatus}></AddSetting>
-        </StyledRow>
 
+        <DisplayWrapper>
+          <DisplayTimer
+            setTimeLeft={this.setTimeLeft}
+            setLength={this.setLength}
+            setTimerStatus={this.setTimerStatus}
+            setTimerType={this.setTimerType}
+            setTimerID={this.setTimerID}
+            setTimerList={this.setTimerList}
+            timerList={this.state.timerList}
+            timerStatus={this.state.timerStatus}
+            timeLeft={this.state.timeLeft}
+            timerType={this.state.timerType}
+            timerID={this.state.timerID}
+          ></DisplayTimer>
+        </DisplayWrapper>
+        <StyledRow>
+          <AddSetting label="Add Setting" handleOnclick={this.addTimer} icon="fas fa-plus fa-sm"></AddSetting>
+          <AddSetting label="Reset Setting" handleOnclick={this.resetTimerSetting} icon="fas fa-edit fa-sx"></AddSetting>
+        </StyledRow>
         <StyledRow>
           <DragDropContext onDragEnd={this.onDragEnd}>
             <Droppable droppableId="timerSettings" direction="vertical">
@@ -317,21 +300,6 @@ export default class App extends Component {
             </Droppable>
           </DragDropContext>
         </StyledRow>
-        <DisplayWrapper>
-          <DisplayTimer
-            setTimeLeft={this.setTimeLeft}
-            setLength={this.setLength}
-            setTimerStatus={this.setTimerStatus}
-            setTimerType={this.setTimerType}
-            setTimerID={this.setTimerID}
-            setTimerList={this.setTimerList}
-            timerList={this.state.timerList}
-            timerStatus={this.state.timerStatus}
-            timeLeft={this.state.timeLeft}
-            timerType={this.state.timerType}
-            timerID={this.state.timerID}
-          ></DisplayTimer>
-        </DisplayWrapper>
       </Layout>
     );
   }
