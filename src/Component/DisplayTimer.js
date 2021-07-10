@@ -3,7 +3,6 @@ import {
   DisplayContainer,
   StyledButton,
   StyledRow,
-  TimerSetting,
   TimeFormat,
 } from "./TimerSetting.elements.js";
 import { displayTimeMMSS } from "../Util/TimeFormat.js";
@@ -15,8 +14,6 @@ const rotation = "clockwise";
 const wrapperStyle = {
   position: "relative",
   width: "10em",
-  maxWidth: "100%",
-  height: "100%",
 };
 const timeStyle = {
   display: "flex",
@@ -45,11 +42,13 @@ const getPathProps = (size, strokeWidth, rotation) => {
 };
 const { path, pathLength } = getPathProps(size, strokeWidth, rotation);
 const strokeDashoffset = (time, start, goal, duration) => {
+
   if (duration === 0) {
     return goal;
   }
 
   const currentTime = time / duration;
+
   return start + goal * currentTime;
 };
 
@@ -65,14 +64,18 @@ export class DisplayTimer extends Component {
     this.duration = this.duration.bind(this);
 
     this.state = {
-      currentIndex: this.props.timerList.findIndex(
-        (item) => item.id === this.props.timerType
-      ),
+      currentIndex: 1
     };
   }
 
+  componentDidMount() {
+    this.setState({
+      currentIndex: this.props.timerType
+    })
+  }
+
   clockInterval = () => {
-    let timeScale = 1;
+    let timeScale = 60;
     let timerID = setTimeout(() => {
       var timeLeft = this.props.timeLeft;
       timeLeft = timeLeft - 1 / timeScale;
@@ -80,27 +83,18 @@ export class DisplayTimer extends Component {
       this.buzzer(timeLeft);
       if (timeLeft < 0) {
         clearTimeout(this.props.timerID);
-        // if (this.props.timerType === "Session") {
-        //   this.props.setTimerType("Break");
-        //   this.props.setTimeLeft(this.props.breakLength);
-        // } else {
-        //   this.props.setTimerType("Session");
-        //   this.props.setTimeLeft(this.props.sessionLength);
-        // }
-        if (this.state.currentIndex < this.props.timerList.length - 1) {
-          this.setState((state) => {
-            return { currentIndex: state.currentIndex + 1 };
-          });
+        let nextIndex = 0;
+        if (this.props.timerType < this.props.timerList.length) {
+          nextIndex = this.props.timerType + 1
         } else {
-          this.setState({
-            currentIndex: 0,
-          });
+          nextIndex = 1
         }
+        
         this.props.setTimerType(
-          this.props.timerList[this.state.currentIndex].id
+          nextIndex
         );
         this.props.setTimeLeft(
-          this.props.timerList[this.state.currentIndex].length
+          this.props.timerList[nextIndex-1].length
         );
       }
       this.props.setTimerID(this.clockInterval());
@@ -123,11 +117,16 @@ export class DisplayTimer extends Component {
   }
 
   reset() {
-    this.props.setLength("Break", 300);
-    this.props.setLength("Session", 1500);
-    this.props.setTimeLeft(1500);
-    this.props.setTimerType("Session");
+    this.props.setTimerType(1);
     clearTimeout(this.props.timerID);
+    let items = Array.from(this.props.timerList);
+    items = items.map((item, index) => {
+      const newItem = { ...item };
+      newItem.order = index + 1
+      return newItem
+    });
+    this.props.setTimerList(items)
+    this.props.setTimeLeft(items[0].length);
 
     this.audioBeep.pause();
     this.audioBeep.currentTime = 0;
@@ -135,11 +134,27 @@ export class DisplayTimer extends Component {
   }
 
   timerLabel() {
-    return this.props.timerType;
+    const timers = [...this.props.timerList];
+    const label = timers.find((item) => {
+      if (item.order === this.props.timerType) {
+        return item;
+      }
+      return null;
+    });
+    return label.name;
   }
 
   duration() {
-    return this.props.timerList[this.state.currentIndex].length * 1000;
+    const timers = [...this.props.timerList];
+
+    const length = timers.find((item) => {
+      if (item.order === this.props.timerType) {
+        return item;
+      }
+      return null;
+    });
+
+    return length.length * 1000;
   }
 
   buzzer(_timer) {
@@ -150,79 +165,77 @@ export class DisplayTimer extends Component {
 
   render() {
     return (
-      <TimerSetting>
-        <DisplayContainer size={size}>
-          <div style={wrapperStyle}>
-            <svg
-              width="100%"
-              height="100%"
-              preserveAspectRatio="xMinYMin slice"
-              viewBox="0 0 100 100"
-              xmlns="https://www.w3.org/2000/svg"
-            >
-              <path
-                d={path}
-                stroke="grey"
-                strokeLinecap="round"
-                cx={size / 2}
-                cy={size / 2}
-                r={size / 2 - 4}
-                strokeWidth={strokeWidth}
-                fill="none"
-              />
-              <path
-                d={path}
-                stroke="red"
-                strokeLinecap="round"
-                cx={size / 2}
-                cy={size / 2}
-                r={size / 2 - 4}
-                fill="none"
-                strokeWidth={strokeWidth}
-                strokeDasharray={pathLength}
-                strokeDashoffset={strokeDashoffset(
-                  this.props.timeLeft * 1000,
-                  0,
-                  pathLength,
-                  this.duration()
-                )}
-              />
-            </svg>
+      <DisplayContainer size={size}>
+        <div style={wrapperStyle}>
+          <svg
+            width="100%"
+            height="100%"
+            preserveAspectRatio="xMinYMin slice"
+            viewBox="0 0 100 100"
+            xmlns="https://www.w3.org/2000/svg"
+          >
+            <path
+              d={path}
+              stroke="grey"
+              strokeLinecap="round"
+              cx={size / 2}
+              cy={size / 2}
+              r={size / 2 - 4}
+              strokeWidth={strokeWidth}
+              fill="none"
+            />
+            <path
+              d={path}
+              stroke="red"
+              strokeLinecap="round"
+              cx={size / 2}
+              cy={size / 2}
+              r={size / 2 - 4}
+              fill="none"
+              strokeWidth={strokeWidth}
+              strokeDasharray={pathLength}
+              strokeDashoffset={strokeDashoffset(
+                this.props.timeLeft * 1000,
+                0,
+                pathLength,
+                this.duration()
+              )}
+            />
+          </svg>
 
-            <div style={timeStyle}>
-              <div id="timer-label">{this.timerLabel()}</div>
-              <TimeFormat id="time-left">
-                {displayTimeMMSS(this.props.timeLeft)}
-              </TimeFormat>
-              <StyledRow>
-                <StyledButton
-                  variant="primary"
-                  id="start_stop"
-                  onClick={this.startStop}
-                >
-                  {this.props.timerStatus === 1 ? (
-                    <i className="fas fa-stop fa-sm"></i>
-                  ) : (
-                    <i className="fas fa-play fa-sm"></i>
-                  )}
-                </StyledButton>
-                <StyledButton variant="primary" id="reset" onClick={this.reset}>
-                  <i className="fas fa-undo fa-sm"></i>
-                </StyledButton>
-              </StyledRow>
-            </div>
+          <div style={timeStyle}>
+            <div id="timer-label">{this.timerLabel()}</div>
+            <TimeFormat id="time-left">
+              {displayTimeMMSS(this.props.timeLeft)}
+            </TimeFormat>
+            <StyledRow>
+              <StyledButton
+                variant="primary"
+                id="start_stop"
+                onClick={this.startStop}
+              >
+                {this.props.timerStatus === 1 ? (
+                  <i className="fas fa-stop fa-sm"></i>
+                ) : (
+                  <i className="fas fa-play fa-sm"></i>
+                )}
+              </StyledButton>
+              <StyledButton variant="primary" id="reset" onClick={this.reset}>
+                <i className="fas fa-undo fa-sm"></i>
+              </StyledButton>
+            </StyledRow>
           </div>
-          <audio
-            id="beep"
-            preload="auto"
-            ref={(audio) => {
-              this.audioBeep = audio;
-            }}
-            //src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
-            src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
-          ></audio>
-        </DisplayContainer>
-      </TimerSetting>
+        </div>
+        <audio
+          id="beep"
+          preload="auto"
+          ref={(audio) => {
+            this.audioBeep = audio;
+          }}
+          //src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+          src="https://sampleswap.org/samples-ghost/DRUMS%20(SINGLE%20HITS)/African%20and%20Eastern%20Percussion/80[kb]african-pe-hi.wav.mp3"
+        ></audio>
+      </DisplayContainer>
     );
   }
 }
