@@ -1,0 +1,54 @@
+{
+  "homepage": "http://k3lau.github.io/pomodoro-clock",
+  "name": "pomodoro-clock",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.2",
+    "axios": "^0.24.0",
+    "bootstrap": "^4.6.0",
+    "jquery": "^3.6.0",
+    "lodash.uniqueid": "^4.0.1",
+    "popper.js": "^1.16.1",
+    "react": "^17.0.1",
+    "react-beautiful-dnd": "^13.1.0",
+    "react-bootstrap": "^1.5.0",
+    "react-dom": "^17.0.1",
+    "react-input-mask": "^2.0.4",
+    "react-scripts": "^4.0.3",
+    "styled-components": "^5.3.0",
+    "typescript": "^4.3.5",
+    "web-vitals": "^1.1.0"
+  },
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
+  }
+}
